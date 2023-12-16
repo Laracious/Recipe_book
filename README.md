@@ -4,11 +4,11 @@ An innovative mobile and web application designed to be your go-to culinary comp
 
 ## Table of Contents
 
-* Feautures
-* Installation
-* Usage
-* Contributing
-* License
+* [Feautures](#features)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Contributing](#contributing)
+* [License](#license)
 
 ## Features
 

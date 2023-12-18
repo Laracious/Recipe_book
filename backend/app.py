@@ -9,7 +9,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.path.absp
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking (optional)
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 # Import models and routes
 from routes.users import user_bp

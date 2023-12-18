@@ -8,7 +8,7 @@ const RecipeGrid = () => {
   return (
     <>
       {error && <Text>{error}</Text>}
-      <SimpleGrid column={3} spacing={10}>
+      <SimpleGrid column={ {sm: 1, md: 2, lg: 3, xl: 5 }} padding="10px" spacing={10}>
         {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />
         ))}

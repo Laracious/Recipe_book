@@ -6,6 +6,9 @@ export interface Recipe {
   id: number;
   name: string;
   thumbnail_url: string;
+  user_ratings:{
+    score: number;
+  }
 }
 
 interface FetchRecipesRespone {

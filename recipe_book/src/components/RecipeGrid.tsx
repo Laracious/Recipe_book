@@ -4,7 +4,7 @@ import { Text } from "@chakra-ui/react";
 
 interface Recipe {
   id: number;
-  title: string;
+  name: string;
 }
 
 interface FetchRecipesRespone {
@@ -19,7 +19,7 @@ const RecipeGrid = () => {
   useEffect(() => {
     
     apiClient
-      .get<FetchRecipesRespone>("/parser")
+      .get<FetchRecipesRespone>("/list")
       .then((res) => setRecipes(res.data.results))
       .catch((err) => setError(err.message));
   }, []);
@@ -29,7 +29,7 @@ const RecipeGrid = () => {
       {error && <Text>{error}</Text>}
       <ul>
         {recipes.map((recipe) => (
-          <li key={recipe.id}>{recipe.title}</li>
+          <li key={recipe.id}>{recipe.name}</li>
         ))}
       </ul>
     </>

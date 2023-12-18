@@ -8,7 +8,7 @@ class Bookmark(BaseModel):
 
     user_id = db.Column(
         db.String(22), db.ForeignKey('user.id'), nullable=False
-        )
+    )
     recipe_id = db.Column(
         db.String(22), db.ForeignKey('recipe.id'), nullable=False
-        )
+    )

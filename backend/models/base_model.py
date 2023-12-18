@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import shortuuid
 from datetime import datetime
+from sqlalchemy.exc import InvalidRequestError, NoResultFound
 
 db = SQLAlchemy()
 
@@ -36,10 +37,32 @@ class BaseModel(db.Model):
         """Generate a unique short ID using shortuuid"""
         return shortuuid.uuid()
 
-    def insert(self):
-        """Insert the current object into the database"""
+    def save(self):
+        """Save the current object to the database"""
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def create(cls, **kwargs):
+        """Create an instance of the model and save it to the database"""
+        instance = cls(**kwargs)
+        instance.save()
+        return instance
+
+    @classmethod
+    def find_one(cls, **kwargs):
+        """
+        Finds the first row found in the table filtered by its arguments
+        """
+        try:
+            instance = cls.query.filter_by(**kwargs).one()
+        except NoResultFound as e:
+            raise e
+        except InvalidRequestError as e:
+            raise e
+        finally:
+            db.session.close()
+        return instance
 
     def update(self, **kwargs):
         """Update the current object with the provided key-value pairs"""
@@ -52,3 +75,18 @@ class BaseModel(db.Model):
         """Delete the current object from the database"""
         db.session.delete(self)
         db.session.commit()
+
+    @classmethod
+    def find_user_by(cls, **kwargs):
+        """
+        Finds the first row found in the users table filtered by its arguments
+        """
+        return cls.find_one(**kwargs)
+
+    @classmethod
+    def update_user(cls, user_id: int, **kwargs) -> None:
+        """
+        Update the user’s attributes as passed in its arguments
+        """
+        user = cls.find_one(id=user_id)
+        user.update(**kwargs)

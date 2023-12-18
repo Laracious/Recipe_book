@@ -1,24 +1,29 @@
+from .recipe import Recipe
 from .base_model import BaseModel, db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(BaseModel, UserMixin):
     """User model"""
-
+    from .bookmarks import Bookmark
     __tablename__ = 'user'
 
     username = db.Column(db.String(100), unique=True, nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+
+    # Correct relationship definition with class name 'Recipe'
     recipes = db.relationship('Recipe', backref='user', lazy=True)
+
+    # Correct relationship definition with class name 'Recipe'
     bookmarks = db.relationship(
         'Recipe',
         secondary='bookmarks',
         lazy='subquery',
         backref=db.backref('bookmarked_by', lazy=True)
     )
-    
+
     def __repr__(self):
         """Return a string representation of the User object"""
         return (
@@ -53,5 +58,4 @@ class User(BaseModel, UserMixin):
             "createdAt": self.createdAt,
             "updatedAt": self.updatedAt
         }
-    
     

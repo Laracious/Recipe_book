@@ -55,7 +55,7 @@ An innovative mobile and web application designed to be your go-to culinary comp
 * Search for specific recipes
 
 ## Contributing
-*Reporting bugs
+* Reporting bugs
 * Suggesting enhancements
 * Submitting pull requests
 * Code style guide

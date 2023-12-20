@@ -9,10 +9,11 @@ const Description = ({ descripe }: Props) => {
   return (
     <Tooltip label={descripe} placement="top">
       <Button
-        background=""        
+        background="#f56835"        
         variant="ghost"
         fontSize="12px"
-        paddingX={2}
+        paddingX={1}
+        height="15px"
         borderRadius="4px"
         _hover={{ bg: "transparent" }} 
       >

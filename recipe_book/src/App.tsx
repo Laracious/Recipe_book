@@ -4,10 +4,15 @@ import RecipeGrid from "./components/RecipeGrid";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import { Routes, Route } from "react-router-dom";
+import { useState } from "react";
 
 //>>>>>>> 6acb0b2e2e708f4dee60172bf28ed2224f88798d
+export interface RecipeQuery {
+  onSearch: (searchText: string) => void;
+} 
 
 function App() {
+  const [recipeQuery, setRecipeQuery] =useState<RecipeQuery>({} as RecipeQuery)
   return (
     //<<<<<<< HEAD
     <div>
@@ -20,7 +25,7 @@ function App() {
         }}
       >
         <GridItem area="nav">
-          <NavBar />
+          <NavBar onSearch={(searchText) => setRecipeQuery({ ...recipeQuery, })}/>
           <Routes>
             <Route path="/Sign-up" element={<SignUp />} />
             <Route path="/Sign-in" element={<SignIn />} />

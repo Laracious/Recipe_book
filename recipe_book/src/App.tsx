@@ -21,6 +21,10 @@ function App() {
       >
         <GridItem area="nav">
           <NavBar />
+          <Routes>
+            <Route path="/Sign-up" element={<SignUp />} />
+            <Route path="/Sign-in" element={<SignIn />} />
+          </Routes>
         </GridItem>
         <Show above="lg">
           <GridItem area="aside" padding="10px" margin="100px 0 0 200px">

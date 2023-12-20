@@ -8,7 +8,7 @@ export interface Recipe {
   name: string;
   thumbnail_url: string;
   user_ratings:{
-    score: number;
+    score: string;
   }
 }
 

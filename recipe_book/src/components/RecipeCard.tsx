@@ -8,7 +8,8 @@ interface Props {
 
 const RecipeCard = ({  recipe } : Props) => {
   return (
-    <Card width = '300px'maxW="sm" borderRadius={10} overflow="hidden">
+    
+    <Card width = '300px' maxW="sm" borderRadius={10} overflow="hidden">
         <Image src={recipe.thumbnail_url}/>
         <CardBody>
             <Heading fontSize="xl">{recipe.name}</Heading>
@@ -17,7 +18,8 @@ const RecipeCard = ({  recipe } : Props) => {
             </HStack>
         </CardBody>
     </Card>
+    
   )
 }
 
-export default RecipeCard  
+export default RecipeCard;

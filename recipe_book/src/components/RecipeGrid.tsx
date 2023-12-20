@@ -1,4 +1,4 @@
-import { SimpleGrid, Skeleton, Text } from "@chakra-ui/react";
+import { Grid, SimpleGrid, Skeleton, Text } from "@chakra-ui/react";
 import useRecipes from "../Hooks/useRecipes";
 import RecipeCard from "./RecipeCard";
 import CardSkeleton from "./CardSkeleton";
@@ -11,9 +11,10 @@ const RecipeGrid = () => {
     <>
       {error && <Text>{error}</Text>}
       <SimpleGrid
-        column={{ sm: 1, md: 2, lg: 3, xl: 5 }}
+        templateColumns="repeat(3, 1fr)"
         padding="10px"
-        spacing={10}
+        margin="100px"
+        gap={4}
       >
         {isLoading && skeletons.map(skeleton => <CardSkeleton key={skeleton}/>)}
         {recipes.map((recipe) => (

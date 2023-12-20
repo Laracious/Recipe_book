@@ -14,7 +14,8 @@ const RecipeGrid = () => {
         templateColumns="repeat(3, 1fr)"
         padding="10px"
         margin="100px"
-        gap={4}
+        gap={8}
+        justifyContent="flex-end"
       >
         {isLoading && skeletons.map(skeleton => <CardSkeleton key={skeleton}/>)}
         {recipes.map((recipe) => (

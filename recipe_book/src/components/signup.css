@@ -5,15 +5,14 @@
 }
 :root {
   --mainColorLight: #27031e;
-  --mainColor: #a80863;
+  --mainColor: #f166b5;
   --secondaryColor: #e6d6e5;
   --textColor: #000;
 }
 
 .signUp-container {
 	width: 100vw;
-	height: 100vh;
-	/* padding-top: 100px; */
+	height: 70vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -21,7 +20,7 @@
 	background-repeat: no-repeat;
 	background-position: center;
 	filter: contrast(100%);
-	
+	/* padding-bottom: 3rem; */
 }
 .signUp-container img{
 	background-size: contain;
@@ -30,25 +29,17 @@
 }
 
 .signUp {
-	/* width: 80%;
-  height: 63%;
-	min-width: 40%;
-	min-height: 40%; */
 	width: 50vh;
   height: auto;
-	/* min-height: 40%; */
-  /* max-width: 80%; */
-  /* margin: auto; */
   padding: 2rem 1rem;
-	/* background-color: red; */
 	border: 1px solid #020b00;
 	border-radius: 4px;
 	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
 }
 
 .signUp form {
-	margin-top: 0;
-	;
+	margin-top: 10px;
+	
 }
 
 .signUp input {
@@ -62,7 +53,7 @@
 .signUp h2{
 	font-size: 3rem;
 	cursor: pointer;
-	color: var(--mainColor);
+	color: var(--textColor);
 }
 
 .signUp button {
@@ -78,7 +69,7 @@
 	font-size: 1.1rem;
 }
 .alternative a {
-	color: #0e0209;
+	color: #ee58b0;
 }
 
 .error-message {

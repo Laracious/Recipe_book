@@ -39,23 +39,23 @@ class User(BaseModel, UserMixin):
         self.password = kwargs.get('password')
         self.recipes = kwargs.get('recipes', [])
         self.bookmarks = kwargs.get('bookmarks', [])
-
-    def set_password(self, password):
-        """Hash and set the user's password"""
-        self.password = generate_password_hash(password)
-
+        
+        #Hash the password in the initialization
+        password = kwargs.get('password')
+        if password:
+            self.password = generate_password_hash(password)
     def check_password(self, password):
         """Check if the provided password matches the user's hashed password"""
         return check_password_hash(self.password, password)
     
-    def to_dict(self):
+    def format(self):
         """Convert the recipe object to a dictionary"""
         return {
             "id": self.id,
             "username": self.username,
             "full_name": self.full_name,
             "email": self.email,
-            "createdAt": self.createdAt,
-            "updatedAt": self.updatedAt
+            # "createdAt": self.createdAt,
+            # "updatedAt": self.updatedAt
         }
     

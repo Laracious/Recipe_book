@@ -14,7 +14,7 @@ def validate_psswd(password):
         not any(char.islower() for char in password) or
         not any(char.isupper() for char in password) or
         not any(char.isdigit() for char in password) or
-        not any(char in "!@#$%^&*()-_+=<>?/{}[]" for char in password)
+        not re.search(r'[!@#$%^&*()-_+=<>?/{},.]', password)
     ):
         raise ValueError("Invalid password format")
 
@@ -22,7 +22,9 @@ def validate_email(email):
     """
     Validate the email format using a regular expression.
     """
-    email_pattern = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+    email_pattern = re.compile(
+        r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'
+    )
     if not email_pattern.match(email):
         raise ValueError("Invalid email format")
 

@@ -1,9 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 import shortuuid
 from datetime import datetime
-from sqlalchemy.exc import InvalidRequestError, NoResultFound
-
-db = SQLAlchemy()
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from recipeapp import db
 
 class BaseModel(db.Model):
     """BaseClass for all models"""
@@ -28,6 +27,7 @@ class BaseModel(db.Model):
         )
 
     def __init__(self, *args, **kwargs):
+        """Initialize the class attributes"""
         super().__init__(*args, **kwargs)
         self.id = self.generate_id() if not self.id else self.id
         self.createdAt = datetime.now()
@@ -48,22 +48,25 @@ class BaseModel(db.Model):
         instance = cls(**kwargs)
         instance.save()
         return instance
-
     @classmethod
     def find_one(cls, **kwargs):
         """
         Finds the first row found in the table filtered by its arguments
         """
         try:
-            instance = cls.query.filter_by(**kwargs).one()
-        except NoResultFound as e:
-            raise e
-        except InvalidRequestError as e:
+            return cls.query.filter_by(**kwargs).one()
+        except NoResultFound:
+            return None  # Return None if no row is found
+        except MultipleResultsFound as e:
+            # Handle the case where multiple rows are found (this should not happen for unique constraints)
             raise e
         finally:
             db.session.close()
-        return instance
-
+    @classmethod
+    def get_all(cls):
+        """Get all users."""
+        return cls.query.all()
+    
     def update(self, **kwargs):
         """Update the current object with the provided key-value pairs"""
         for key, value in kwargs.items():
@@ -75,18 +78,3 @@ class BaseModel(db.Model):
         """Delete the current object from the database"""
         db.session.delete(self)
         db.session.commit()
-
-    @classmethod
-    def find_user_by(cls, **kwargs):
-        """
-        Finds the first row found in the users table filtered by its arguments
-        """
-        return cls.find_one(**kwargs)
-
-    @classmethod
-    def update_user(cls, user_id: int, **kwargs) -> None:
-        """
-        Update the user’s attributes as passed in its arguments
-        """
-        user = cls.find_one(id=user_id)
-        user.update(**kwargs)

@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from recipeapp.models.user import User
-from recipeapp.utils.data_validation import validate_email, validate_psswd, validate_username
+from recipeapp.utils.data_validation import (
+    validate_email, validate_psswd,
+    validate_username, validate_uuid
+)
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
 
@@ -66,6 +69,10 @@ def get_user(user_id):
 def update_user(user_id):
     """Updates a particular User"""
     try:
+        #validate user_id
+        user_id = validate_uuid(user_id)
+        
+        #get the json data
         data = request.get_json()
         
         # Validate the json data
@@ -95,9 +102,10 @@ def update_user(user_id):
             # Update the user with the data from the JSON
             user.update(**data)
 
-            return jsonify({
-                'message': 'User updated successfully', 'user': user.format()
-            })
+            return jsonify(
+                {'message': 'User updated successfully', 'user': user.format()
+                 }
+                )
         else:
             return jsonify({'message': 'User not found'}), 404
     except Exception as e:

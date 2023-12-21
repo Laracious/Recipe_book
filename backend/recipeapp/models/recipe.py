@@ -20,7 +20,7 @@ class Recipe(BaseModel):
         super().__init__(*args, **kwargs)
         self.name = name
 
-    def to_dict(self):
+    def format(self):
         """Convert the recipe object to a dictionary"""
         return {
             "id": self.id,

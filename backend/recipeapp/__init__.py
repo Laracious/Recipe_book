@@ -36,7 +36,9 @@ def create_app(config):
 
     @app.errorhandler(OperationalError)
     def handle_db_connection_error(e):
-        return jsonify({"error": "Database connection error", "message": str(e)}), 500
+        return jsonify(
+            {"error": "Database connection error", "message": str(e)}
+            ), 500
 
 
     # Load Swagger content from the file

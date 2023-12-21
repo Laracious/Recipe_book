@@ -6,7 +6,7 @@ import SignIn from "./components/SignIn";
 import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
-//>>>>>>> 6acb0b2e2e708f4dee60172bf28ed2224f88798d
+
 export interface RecipeQuery {
   onSearch: (searchText: string) => void;
 } 
@@ -42,7 +42,6 @@ function App() {
       </Grid>
     </div>
   );
-  //=======
 
   <Grid
     templateAreas={{

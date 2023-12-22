@@ -3,7 +3,7 @@ import NavBar from "./components/NavBar";
 import RecipeGrid from "./components/RecipeGrid";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
 
 

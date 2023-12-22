@@ -23,11 +23,13 @@ const RecipeCard = ({ recipe }: Props) => {
       overflow="hidden"
       margin="30px"
       boxShadow="xl"
-      bg="#a80863"   
-      >
+      bg="#a80863"
+    >
       <Image height={200} src={recipe.thumbnail_url} alt={recipe.name} />
       <CardBody>
-        <Heading fontSize="xl">{recipe.name}</Heading>
+        <Heading fontSize="xl" color="black">
+          {recipe.name}
+        </Heading>
         <HStack spacing={3} justify="space-between">
           <Description descripe={recipe.description} />
           <CriticScore

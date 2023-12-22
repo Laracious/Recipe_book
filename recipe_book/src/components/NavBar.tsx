@@ -1,7 +1,8 @@
-import { Flex, HStack, Image, Text } from "@chakra-ui/react";
+import { Button, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import logo from "../assets/LOGO.png";
 import ColorModeSwitch from "./colorModeSwitch";
 import SearchInput from "./Searchinput";
+import { Link } from "react-router-dom";
 
 interface Props {
   onSearch: (searchText: string) => void;
@@ -22,7 +23,7 @@ const NavBar = ({ onSearch}: Props) => {
         >
           Recipe Book
         </Text>
-        
+        <Link to="/sign-in">Signin</Link>
         <SearchInput onSearch={onSearch}/>
         <ColorModeSwitch />
         

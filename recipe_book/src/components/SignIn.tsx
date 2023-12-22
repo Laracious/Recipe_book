@@ -3,9 +3,10 @@ import "./signin.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import NavBar from "./NavBar";
 
 const SignIn = () => {
-
+  
   //STORE THE DEFAULT (EMPTY) FORM STATE OF THE FORM
   const defaultFormData = {
     usernameOrEmail: "",
@@ -115,7 +116,9 @@ const SignIn = () => {
 
   return (
     <>
+    
     <ToastContainer autoClose={2000} />
+    
     <div className="login-container">
       <div className="login">
         <h2>Login</h2>

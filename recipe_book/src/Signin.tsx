@@ -5,35 +5,22 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
-import Home from "./components/home";
-
 
 export interface RecipeQuery {
   onSearch: (searchText: string) => void;
-} 
+}
 
 function App() {
-  const [recipeQuery, setRecipeQuery] =useState<RecipeQuery>({} as RecipeQuery)
+  const [recipeQuery, setRecipeQuery] = useState<RecipeQuery>(
+    {} as RecipeQuery
+  );
   return (
-<div>
-      <Grid
-        templateColumns="repeat(5, 1fr)"
-        gap={0}
-        templateAreas={{
-          base: `"nav " " main"`,
-          lg: `"nav nav" "aside main"`,
-        }}
-      >
-        
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Sign-up" element={<SignUp />} />
-          <Route path="/Sign-in" element={<SignIn />} />
-        </Routes>
-      </Grid>
-    </div>
+    <Routes>
+      <Route path="/" element={}></Route>
 
-
+      <Route path="/Sign-up" element={<SignUp />} />
+      <Route path="/Sign-in" element={<SignIn />} />
+    </Routes>
 
     //<<<<<<< HEAD
     // <div>

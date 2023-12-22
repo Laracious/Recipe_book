@@ -1,37 +1,27 @@
-import { useEffect, useState } from "react";
-import apiClient from "../Services/api-client";
-import { Text } from "@chakra-ui/react";
-
-interface Recipe {
-  id: number;
-  name: string;
-}
-
-interface FetchRecipesRespone {
-  count: number;
-  results: Recipe[];
-}
+import { Grid, SimpleGrid, Skeleton, Text } from "@chakra-ui/react";
+import useRecipes from "../Hooks/useRecipes";
+import RecipeCard from "./RecipeCard";
+import CardSkeleton from "./CardSkeleton";
 
 const RecipeGrid = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    
-    apiClient
-      .get<FetchRecipesRespone>("/list")
-      .then((res) => setRecipes(res.data.results))
-      .catch((err) => setError(err.message));
-  }, []);
+  const { recipes, error, isLoading } = useRecipes();
+  const skeletons = [1, 2, 3, 4, 5, 6];
 
   return (
     <>
       {error && <Text>{error}</Text>}
-      <ul>
+      <SimpleGrid
+        templateColumns="repeat(3, 1fr)"
+        padding="10px"
+        margin="100px"
+        gap={8}
+        justifyContent="flex-end"
+      >
+        {isLoading && skeletons.map(skeleton => <CardSkeleton key={skeleton}/>)}
         {recipes.map((recipe) => (
-          <li key={recipe.id}>{recipe.name}</li>
+          <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
-      </ul>
+      </SimpleGrid>
     </>
   );
 };

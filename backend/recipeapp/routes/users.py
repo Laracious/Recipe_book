@@ -57,6 +57,9 @@ def create_user():
 def get_user(user_id):
     """Finds a user associated with user_id and returns it"""
     try:
+        #validate user_id
+        validate_uuid(user_id)
+        
         user = User.find_one(id=user_id)
         if user:
             return jsonify(user.format())
@@ -70,7 +73,7 @@ def update_user(user_id):
     """Updates a particular User"""
     try:
         #validate user_id
-        user_id = validate_uuid(user_id)
+        validate_uuid(user_id)
         
         #get the json data
         data = request.get_json()
@@ -101,6 +104,7 @@ def update_user(user_id):
 
             # Update the user with the data from the JSON
             user.update(**data)
+            user.save()
 
             return jsonify(
                 {'message': 'User updated successfully', 'user': user.format()
@@ -115,6 +119,9 @@ def update_user(user_id):
 def delete_user(user_id):
     """Deletes a particular User"""
     try:
+        #validate user_id
+        validate_uuid(user_id)
+        
         user = User.find_one(id=user_id)
         if user:
             user.delete()

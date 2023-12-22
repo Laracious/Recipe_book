@@ -69,10 +69,15 @@ class BaseModel(db.Model):
     
     def update(self, **kwargs):
         """Update the current object with the provided key-value pairs"""
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        self.updatedAt = datetime.now()
-        db.session.commit()
+        try:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+            self.updatedAt = datetime.now()
+            db.session.commit()
+        except Exception as e:
+            print(f"Error during update: {e}")
+            db.session.rollback()  # Rollback changes if an exception occurs
+            raise  # Re-raise the exception for visibility
 
     def delete(self):
         """Delete the current object from the database"""

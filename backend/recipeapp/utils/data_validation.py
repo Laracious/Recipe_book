@@ -2,13 +2,18 @@ from marshmallow import ValidationError
 import shortuuid
 import re
 
-
 def validate_uuid(value):
     """
     A custom validator function that checks if a value is a valid shortuuid.
     """
-    if not isinstance(
-        value, str) or len(value) != 22 or not shortuuid.is_valid(value):
+    if len(value) != 22:
+        raise ValidationError("Invalid uuid length.")
+
+    try:
+        # Try to decode the provided value as a shortuuid
+        shortuuid.decode(value)
+    except ValueError:
+        # If decoding fails, raise a validation error
         raise ValidationError("Invalid uuid.")
     
 def validate_psswd(password):

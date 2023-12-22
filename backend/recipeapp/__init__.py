@@ -78,12 +78,11 @@ def create_app(config):
 
     # imports blueprints
     from recipeapp.routes.users import user_bp
-   
-
+    from recipeapp.routes.recipes import recipe_bp
 
     # register blueprint
     app.register_blueprint(user_bp)
-
+    app.register_blueprint(recipe_bp)
 
     # create db tables from models if not exists
     with app.app_context():

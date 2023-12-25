@@ -12,6 +12,8 @@ class User(BaseModel, UserMixin):
     full_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    
 
     # Correct relationship definition with class name 'Recipe'
     recipes = db.relationship('Recipe', backref='user', lazy=True)
@@ -29,6 +31,7 @@ class User(BaseModel, UserMixin):
         return (
             f"Id: {self.id}, Username: {self.username}, "
             f"Name: {self.full_name}, Email: {self.email}"
+            f"Is Admin: {self.is_admin}"
             )
 
     def __init__(self, *args, **kwargs):
@@ -37,6 +40,7 @@ class User(BaseModel, UserMixin):
         self.full_name = kwargs.get('full_name')
         self.email = kwargs.get('email')
         self.password = kwargs.get('password')
+        self.is_admin = kwargs.get('is_admin', False)
         self.recipes = kwargs.get('recipes', [])
         self.bookmarks = kwargs.get('bookmarks', [])
         
@@ -55,6 +59,7 @@ class User(BaseModel, UserMixin):
             "username": self.username,
             "full_name": self.full_name,
             "email": self.email,
+            "is_admin": self.is_admin,
             # "createdAt": self.createdAt,
             # "updatedAt": self.updatedAt
         }

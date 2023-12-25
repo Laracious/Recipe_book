@@ -1,4 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
 import shortuuid
 from datetime import datetime
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound

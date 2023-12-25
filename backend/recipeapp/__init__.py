@@ -71,6 +71,7 @@ def create_app(config):
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
     jwt = JWTManager(app)  # Instantiate the JWTManager class
+    jwt.init_app(app)  # initialize the JWTManager with your app
 
 
     # Initialize Flask-Mail

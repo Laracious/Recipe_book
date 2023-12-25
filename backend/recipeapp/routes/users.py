@@ -1,8 +1,13 @@
 from flask import Blueprint, request, jsonify
+from datetime import timedelta
 from recipeapp.models.user import User
 from recipeapp.utils.data_validation import (
     validate_email, validate_psswd,
     validate_username, validate_uuid
+)
+from flask_jwt_extended import (
+    create_access_token, jwt_required,
+    get_jwt_identity, create_refresh_token
 )
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
@@ -130,3 +135,30 @@ def delete_user(user_id):
             return jsonify({'message': 'User not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@user_bp.route('/users/login', methods=['POST'])
+def login():
+    """Logs in a user"""
+    data = request.get_json()
+    user = User.find_one(email=data.get('email'))
+
+    try:
+        if user and user.check_password(data.get('password')):
+            # Set the expiration time for the access token (e.g., 15 minutes)
+            access_token = create_access_token(identity=user.user_id, expires_delta=timedelta(minutes=15))
+            
+            # Set the expiration time for the refresh token (e.g., 7 days)
+            refresh_token = create_refresh_token(identity=user.user_id, expires_delta=timedelta(days=7))
+            
+            return jsonify({
+                'message': 'User logged in successfully',
+                'token': {
+                    'access_token': access_token,
+                    'refresh_token': refresh_token
+                }
+            }), 200
+    except Exception as e:
+        # Handle other exceptions (not necessarily JWTError)
+        return jsonify({'error': f'An error occurred while processing the login: {str(e)}'}), 500
+
+    return jsonify({'error': 'Invalid email or password'}), 401

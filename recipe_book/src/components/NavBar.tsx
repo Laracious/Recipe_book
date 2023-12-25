@@ -23,7 +23,8 @@ const NavBar = ({ onSearch}: Props) => {
         >
           Recipe Book
         </Text>
-        <Link to="/sign-in">Signin</Link>
+        <Link to="/sign-in">Sign In</Link>
+        <Link to="/sign-up">Sign Up</Link>
         <SearchInput onSearch={onSearch}/>
         <ColorModeSwitch />
         

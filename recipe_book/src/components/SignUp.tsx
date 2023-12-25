@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 const SignUp = () => {
   //STORE THE DEFAULT (EMPTY) FORM STATE OF THE FORM
   const defaultFormData = {
+    fullname: "",
     username: "",
     email: "",
     password: "",
@@ -19,6 +20,7 @@ const SignUp = () => {
 
   //SET THE INITIAL ERROR STATE.
   const [error, setError] = useState({
+    fullname: false,
     username: false,
     email: false,
     password: false,
@@ -28,7 +30,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   //DESTRUCTURE THE FORM-DATA OBJECT
-  const { username, email, password, cpassword } = formData;
+  const { fullname, username, email, password, cpassword } = formData;
 
   //CHANGE FUNCTION FOR UPDATING FORM-DATA VALUES IN REAL-TIME.
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -44,16 +46,18 @@ const SignUp = () => {
 
   //FUNCTION FOR HANDLING FORM VALIDATION
   const isValid = (
+    fullname: string,
     username: string,
     password: string,
     cpassword: string,
     email: string
   ) => {
     let state = true;
-    const nameRegex = /^[a-zA-Z]{3,7}$/;
+    const nameRegex = /^[a-zA-Z ]{3,30}$/; // Allow spaces in the full name
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}$/;
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
+    const isValidFullName = nameRegex.test(fullname.trim());
     const userName = username.trim();
     const pword = password.trim();
     const cPword = cpassword.trim();
@@ -65,6 +69,7 @@ const SignUp = () => {
     const isValidEmail = emailRegex.test(mail);
 
     setError({
+      fullname: !isValidFullName,
       username: !isValidUsername,
       password: !isValidPassword,
       match: !isPasswordMatch,
@@ -72,7 +77,11 @@ const SignUp = () => {
     });
 
     return (
-      isValidUsername && isValidPassword && isPasswordMatch && isValidEmail
+      isValidFullName &&
+      isValidUsername &&
+      isValidPassword &&
+      isPasswordMatch &&
+      isValidEmail
     );
   };
 
@@ -84,7 +93,7 @@ const SignUp = () => {
     e.preventDefault();
 
     //VALIDATE THE FORM-DATA AND STORE THE RESULT
-    let valid = isValid(username, password, cpassword, email);
+    let valid = isValid(fullname, username, password, cpassword, email);
 
     //EXECUTE THE ENCLOSED CODE IF FORM VALIDATION RETURNS TRUE
     if (valid) {
@@ -99,6 +108,7 @@ const SignUp = () => {
         const response = await axios.post(
           "http://localhost:5173/api/register",
           {
+            fullname,
             username,
             email,
             password,
@@ -127,6 +137,19 @@ const SignUp = () => {
         <div className="signUp">
           <h2>Sign Up</h2>
           <form onSubmit={handleSignup}>
+          <input
+          type="text"
+          name="fullname"
+          placeholder="Full Name"
+          value={fullname}
+          onChange={(e) => handleChange(e)}
+          required
+          />
+          {error.fullname && (
+          <span className="error-message">
+          <small>Invalid full name</small>
+          </span>
+          )}
             <input
               type="text"
               name="username"

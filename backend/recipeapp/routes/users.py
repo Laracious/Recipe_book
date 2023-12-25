@@ -145,10 +145,16 @@ def login():
     try:
         if user and user.check_password(data.get('password')):
             # Set the expiration time for the access token (e.g., 15 minutes)
-            access_token = create_access_token(identity=user.user_id, expires_delta=timedelta(minutes=15))
+            access_token = create_access_token(
+                identity=user.id,
+                expires_delta=timedelta(minutes=15)
+                )
             
             # Set the expiration time for the refresh token (e.g., 7 days)
-            refresh_token = create_refresh_token(identity=user.user_id, expires_delta=timedelta(days=7))
+            refresh_token = create_refresh_token(
+                identity=user.id, 
+                expires_delta=timedelta(days=7)
+                )
             
             return jsonify({
                 'message': 'User logged in successfully',
@@ -159,6 +165,8 @@ def login():
             }), 200
     except Exception as e:
         # Handle other exceptions (not necessarily JWTError)
-        return jsonify({'error': f'An error occurred while processing the login: {str(e)}'}), 500
+        return jsonify({
+            'error': f'An error occurred while processing the login: {str(e)}'
+            }), 500
 
     return jsonify({'error': 'Invalid email or password'}), 401

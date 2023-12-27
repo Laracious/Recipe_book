@@ -109,8 +109,28 @@ def create_app(config):
             'error': 'token_revoked'
         }), 401
     
+    # additional claims
+    # @jwt.additional_claims_loader
+    # def add_claims_to_jwt(identity):
+    #     if identity == 1:
+    #         return {'is_admin': True}
+    #     return {'is_admin': False}
+    
+    # @jwt.user_claims_loader
+    # def add_claims_to_user(user):
+    #     return {'is_admin': user.is_admin}
+    
+    # @jwt.user_identity_loader
+    # def user_identity_lookup(user):
+    #     return user.id
+    
+    # @jwt.user_lookup_loader
+    # def user_lookup_callback(_jwt_header, jwt_data):
+    #     identity = jwt_data["sub"]
+    #     return User.query.filter_by(id=identity).one_or_none()
+    
 
-    # Initialize Flask-Mail
+    # # Initialize Flask-Mail
     mail.init_app(app)  # Initialize Flask-Mail with your app
 
     # imports blueprints

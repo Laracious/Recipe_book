@@ -5,14 +5,14 @@ const ColorModeSwitch = () => {
   const { toggleColorMode, colorMode } = useColorMode();
 
   return (
-    <HStack justifyContent='space-between' padding={5} position="absolute" top="0" right="0">
+    <HStack justifyContent='flex-end' padding={5} position="absolute" top="0" right="0">
       <Switch
         colorScheme="green"
         isChecked={colorMode === "dark"}
         onChange={toggleColorMode}
-        style={{ marginLeft: "auto" }}
+        aria-label="Toggle Dark Mode"
       />
-      <Text>Dark Mode</Text>
+      <Text ml={2} fontWeight="bold">Dark Mode</Text>
     </HStack>
   );
 };

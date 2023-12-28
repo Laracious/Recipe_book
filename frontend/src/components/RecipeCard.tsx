@@ -4,17 +4,22 @@ import {
   HStack,
   Heading,
   Image,
-  Tooltip,
 } from "@chakra-ui/react";
 import { Recipe } from "../Hooks/useRecipes";
 import CriticScore from "./CriticScore";
 import Description from "./description";
+import { useColorMode } from "@chakra-ui/react";
 
 interface Props {
   recipe: Recipe;
 }
 
 const RecipeCard = ({ recipe }: Props) => {
+  const { colorMode } = useColorMode();
+
+  const cardBgColor = colorMode === "dark" ? "#1a202c" : "#a80863";
+  const textColor = colorMode === "dark" ? "white" : "black";
+
   return (
     <Card
       width="300px"
@@ -23,18 +28,21 @@ const RecipeCard = ({ recipe }: Props) => {
       overflow="hidden"
       margin="30px"
       boxShadow="xl"
-      bg="#a80863"
+      bg={cardBgColor}
+      color={textColor}
     >
-      <Image height={200} src={recipe.thumbnail_url} alt={recipe.name} />
+      <Image
+        height={200}
+        src={recipe.thumbnail_url}
+        alt={`Thumbnail for ${recipe.name}`}
+      />
       <CardBody>
-        <Heading fontSize="xl" color="black">
+        <Heading fontSize="xl" color={textColor}>
           {recipe.name}
         </Heading>
         <HStack spacing={3} justify="space-between">
           <Description descripe={recipe.description} />
-          <CriticScore
-            scoring={parseFloat((recipe.user_ratings.score * 10).toFixed(1))}
-          />
+          <CriticScore scoring={parseFloat((recipe.user_ratings.score * 10).toFixed(1))} />
         </HStack>
       </CardBody>
     </Card>

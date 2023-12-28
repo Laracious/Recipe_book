@@ -119,27 +119,65 @@ def get_one_recipe(recipe_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @recipe_bp.route('/recipes/all', methods=['GET'])
 def get_all_recipes():
     """
-    Get All Recipes
+    Get All Recipes with Pagination
 
-    Retrieve a list of all recipes.
+    Retrieve a paginated list of all recipes.
+
+    Query Parameters:
+        - page: Page number (default: 1)
+        - per_page: Number of items per page (default: 10)
 
     Returns:
-        JSON: A list of recipe objects.
+        JSON: Paginated list of recipe objects.
     """
     try:
-        # Fetch all recipes from the database
-        recipes = Recipe.get_all()
-        # Convert recipes to a list of dictionaries
-        recipes_data = [recipe.format() for recipe in recipes]
-       
-        # Return the list of recipes as JSON
-        return jsonify({"recipes": recipes_data})
+        # Parse query parameters for pagination
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+
+        # Fetch paginated recipes from the database
+        recipes = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
+
+        # Convert paginated recipes to a list of dictionaries
+        recipes_data = [recipe.format() for recipe in recipes.items]
+
+        # Return the paginated list of recipes as JSON
+        return jsonify({
+            "recipes": recipes_data,
+            "page": page,
+            "per_page": per_page,
+            "total_items": recipes.total,
+            "total_pages": recipes.pages
+        })
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# @recipe_bp.route('/recipes/all', methods=['GET'])
+# def get_all_recipes():
+#     """
+#     Get All Recipes
+
+#     Retrieve a list of all recipes.
+
+#     Returns:
+#         JSON: A list of recipe objects.
+#     """
+#     try:
+#         # Fetch all recipes from the database
+#         recipes = Recipe.get_all()
+#         # Convert recipes to a list of dictionaries
+#         recipes_data = [recipe.format() for recipe in recipes]
+       
+#         # Return the list of recipes as JSON
+#         return jsonify({"recipes": recipes_data})
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 @recipe_bp.route('/recipes/<recipe_id>', methods=['DELETE'])
 def delete_recipe(recipe_id):

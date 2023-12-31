@@ -1,6 +1,3 @@
-<<<<<<< HEAD:frontend/recipe_book/src/components/RecipeCard.tsx
-import { Card, CardBody,HStack, Heading, Image, Tooltip,} from "@chakra-ui/react";
-=======
 import {
   Card,
   CardBody,
@@ -8,7 +5,6 @@ import {
   Heading,
   Image,
 } from "@chakra-ui/react";
->>>>>>> f6acfede9528ff1e2154abd1cd83fe58dcb034a8:frontend/src/components/RecipeCard.tsx
 import { Recipe } from "../Hooks/useRecipes";
 import CriticScore from "./CriticScore";
 import Description from "./description";
@@ -32,12 +28,8 @@ const RecipeCard = ({ recipe }: Props) => {
       overflow="hidden"
       margin="10px"
       boxShadow="xl"
-<<<<<<< HEAD:frontend/recipe_book/src/components/RecipeCard.tsx
-      bg="#29a9ed"
-=======
       bg={cardBgColor}
       color={textColor}
->>>>>>> f6acfede9528ff1e2154abd1cd83fe58dcb034a8:frontend/src/components/RecipeCard.tsx
     >
       <Image
         height={200}

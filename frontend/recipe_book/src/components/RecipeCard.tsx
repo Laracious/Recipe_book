@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardBody,
-  HStack,
-  Heading,
-  Image,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Card, CardBody,HStack, Heading, Image, Tooltip,} from "@chakra-ui/react";
 import { Recipe } from "../Hooks/useRecipes";
 import CriticScore from "./CriticScore";
 import Description from "./description";
@@ -21,9 +14,9 @@ const RecipeCard = ({ recipe }: Props) => {
       maxW="sm"
       borderRadius={10}
       overflow="hidden"
-      margin="30px"
+      margin="10px"
       boxShadow="xl"
-      bg="#a80863"
+      bg="#29a9ed"
     >
       <Image height={200} src={recipe.thumbnail_url} alt={recipe.name} />
       <CardBody>

@@ -6,8 +6,9 @@
 :root {
   --mainColorLight: #27031e;
   --mainColor: #a80863;
-  --secondaryColor: #e6d6e5;
+  --secondaryColor: #ef7ac8;
   --textColor: #000;
+  --mainOtherColor: #74c7f4;
 }
 
 .login-container {

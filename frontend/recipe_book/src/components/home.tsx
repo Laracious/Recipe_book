@@ -13,7 +13,7 @@ const Home = () => {
     </GridItem>
      <Show above="lg">
      <GridItem area="aside" padding="10px" margin="100px 0 0 200px">
-       Aside
+       Recipes
      </GridItem>
    </Show>
    <GridItem area="main">

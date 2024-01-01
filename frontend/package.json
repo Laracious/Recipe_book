@@ -8,6 +8,12 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "scriptDescriptions": {
+    "dev": "Run development server with Vite",
+    "build": "Build the project using TypeScript and Vite",
+    "preview": "Preview the project using Vite"
+  },
+  
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.1",

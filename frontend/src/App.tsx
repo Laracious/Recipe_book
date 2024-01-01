@@ -1,6 +1,4 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
-import NavBar from "./components/NavBar";
-import RecipeGrid from "./components/RecipeGrid";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import { Route, Routes } from "react-router-dom";
@@ -17,12 +15,13 @@ function App() {
   return (
 <div>
       <Grid
-        templateColumns="repeat(5, 1fr)"
+      templateAreas={{
+        base: `"nav " " main"`,
+        lg: `"nav nav" "aside main"`,
+      }}
+        templateColumns="repeat(2, 1fr)"
         gap={0}
-        templateAreas={{
-          base: `"nav " " main"`,
-          lg: `"nav nav" "aside main"`,
-        }}
+        
       >
         
         <Routes>

@@ -146,13 +146,13 @@ def login():
         if user and user.check_password(data.get('password')):
             # Set the expiration time for the access token (e.g., 15 minutes)
             access_token = create_access_token(
-                identity=user.id,
+                identity=user.username,
                 expires_delta=timedelta(minutes=15)
                 )
             
             # Set the expiration time for the refresh token (e.g., 7 days)
             refresh_token = create_refresh_token(
-                identity=user.id, 
+                identity=user.username, 
                 expires_delta=timedelta(days=7)
                 )
             

@@ -26,10 +26,14 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-
+# Test registration
 # curl -X POST -H "Content-Type: application/json" -d '{
-#     "fullname": "wale Doe",
-#     "username": "waleldoe",
-#     "email": "waledoe@example.com",
-#     "password": "@77w0rd"
+#     "fullname": "Mary Doe",
+#     "username": "marydoe",
+#     "email": "marydoe@example.com",
+#     "password": "@77w0rd@"
 # }' http://localhost:5000/register
+    
+# test login
+# curl -X POST -H "Content-Type: application/json" -d '{"username": "your_username", "password": "your_password"}' http://localhost:5000/login
+# curl -X POST -H "Content-Type: application/json" -d '{"email": "marydoe@example.com", "password": "@77w0rd@"}' http://localhost:5000/login

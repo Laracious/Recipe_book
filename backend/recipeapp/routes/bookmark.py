@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from recipeapp.models.bookmarks import Bookmark
 from recipeapp.utils.data_validation import validate_uuid
+from flask_jwt_extended import jwt_required
 
 bookmark_bp = Blueprint('bookmark', __name__, url_prefix='/api/v1')
 
 @bookmark_bp.route('/bookmarks/create', methods=['POST'])
+@jwt_required()
 def create_bookmark():
     """Create a new bookmark and return the result
 
@@ -29,6 +31,7 @@ def create_bookmark():
         return jsonify({'error': str(e)}), 500
 
 @bookmark_bp.route('/bookmarks/<user_id>', methods=['GET'])
+@jwt_required()
 def get_user_bookmarks(user_id):
     """Get all bookmarks for a user
 

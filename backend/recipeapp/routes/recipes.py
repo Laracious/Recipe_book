@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from recipeapp.models.recipe import Recipe
 from recipeapp.utils.data_validation import validate_uuid
 from recipeapp import db
@@ -7,6 +8,7 @@ recipe_bp = Blueprint('recipe', __name__, url_prefix='/api/v1')
 
 
 @recipe_bp.route('/recipes/create', methods=['POST'])
+@jwt_required()
 def create_recipe():
     """Creates a new recipe and returns it
 
@@ -44,6 +46,7 @@ def create_recipe():
         return jsonify({'error': str(e)}), 500
 
 @recipe_bp.route('/recipes/<recipe_id>', methods=['PUT'])
+@jwt_required()
 def update_recipe(recipe_id):
     """
     Update Recipe
@@ -157,29 +160,9 @@ def get_all_recipes():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# @recipe_bp.route('/recipes/all', methods=['GET'])
-# def get_all_recipes():
-#     """
-#     Get All Recipes
-
-#     Retrieve a list of all recipes.
-
-#     Returns:
-#         JSON: A list of recipe objects.
-#     """
-#     try:
-#         # Fetch all recipes from the database
-#         recipes = Recipe.get_all()
-#         # Convert recipes to a list of dictionaries
-#         recipes_data = [recipe.format() for recipe in recipes]
-       
-#         # Return the list of recipes as JSON
-#         return jsonify({"recipes": recipes_data})
-
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
 
 @recipe_bp.route('/recipes/<recipe_id>', methods=['DELETE'])
+@jwt_required()
 def delete_recipe(recipe_id):
     """
     Delete Recipe
@@ -282,6 +265,7 @@ def rate_negative(recipe_id):
 
 
 @recipe_bp.route('/recipes/<recipe_id>/reset_rating', methods=['POST'])
+@jwt_required()
 def reset_rating(recipe_id):
     """
     Reset user rating for a recipe.

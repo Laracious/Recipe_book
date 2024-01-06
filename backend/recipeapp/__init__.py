@@ -9,10 +9,13 @@ import yaml
 import os
 from flask_mail import Mail
 from flask_jwt_extended import JWTManager
+from flask_apscheduler import APScheduler
 
-
+# Initialize SQLAlchemy
 db = SQLAlchemy()
 
+# Create an instance of the APScheduler
+scheduler = APScheduler()
 
 # Create an instance of Swagger
 swagger = Swagger()
@@ -73,6 +76,10 @@ def create_app(config):
     jwt = JWTManager(app)  # Instantiate the JWTManager class
     jwt.init_app(app)  # initialize the JWTManager with your app
     
+    # Initialize the scheduler
+    scheduler.init_app(app)
+    scheduler.start()
+        
     #jwt error handlers
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
@@ -114,8 +121,14 @@ def create_app(config):
     def add_claims_to_jwt(identity):
         if identity == "imuaz":
             return {'is_admin': True}
-        return {'is_admin': False}
+        return {'is_admin': False} 
     
+    # Callback function to check if a JWT exists in the blocklist
+    from recipeapp.models.jwt_blocklist import TokenBlocklist
+    @jwt.token_in_blocklist_loader
+    def check_if_token_revoked(jwt_header, jwt_payload):
+        jti = jwt_payload["jti"]
+        return TokenBlocklist.is_jti_blacklisted(jti)
     # @jwt.user_claims_loader
     # def add_claims_to_user(user):
     #     return {'is_admin': user.is_admin}

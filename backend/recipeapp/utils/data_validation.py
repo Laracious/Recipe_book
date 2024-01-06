@@ -23,14 +23,14 @@ def validate_psswd(password):
     - At least 1 lowercase character
     - At least 1 uppercase character
     - At least 1 digit
-    - At least 1 special character
+    - At least 1 special character (!@#$%^&*()-_+=<>?/{},.)
     """
     if (
         len(password) < 8 or
         not any(char.islower() for char in password) or
         not any(char.isupper() for char in password) or
         not any(char.isdigit() for char in password) or
-        not re.search(r'[!@#$%^&*()-_+=<>?/{},.]', password)
+        not any(char in r'!@#$%^&*()-_+=<>?/{},.' for char in password)
     ):
         raise ValueError("Invalid password format")
 

@@ -1,18 +1,21 @@
 from flask import Blueprint, request, jsonify
 from datetime import timedelta
+from flask_jwt_extended import (
+    create_access_token, 
+    jwt_required, get_jwt,
+    get_jwt_identity, create_refresh_token
+)
+from recipeapp.models.jwt_blocklist import TokenBlocklist
 from recipeapp.models.user import User
 from recipeapp.utils.data_validation import (
     validate_email, validate_psswd,
     validate_username, validate_uuid
 )
-from flask_jwt_extended import (
-    create_access_token, jwt_required,
-    get_jwt_identity, create_refresh_token
-)
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
 
 @user_bp.route('users/all', methods=['GET'])
+@jwt_required()
 def get_all_users():
     """Gets all users"""
     try:
@@ -59,6 +62,7 @@ def create_user():
         return jsonify({'error': str(e)}), 500
     
 @user_bp.route('/users/<user_id>', methods=['GET'])
+@jwt_required()
 def get_user(user_id):
     """Finds a user associated with user_id and returns it"""
     try:
@@ -74,6 +78,7 @@ def get_user(user_id):
         return jsonify({'error': str(e)}), 500
 
 @user_bp.route('/users/<user_id>', methods=['PUT'])
+@jwt_required()
 def update_user(user_id):
     """Updates a particular User"""
     try:
@@ -121,6 +126,7 @@ def update_user(user_id):
         return jsonify({'error': str(e)}), 500
 
 @user_bp.route('/users/<user_id>', methods=['DELETE'])
+@jwt_required()
 def delete_user(user_id):
     """Deletes a particular User"""
     try:
@@ -170,3 +176,41 @@ def login():
             }), 500
 
     return jsonify({'error': 'Invalid email or password'}), 401
+
+@user_bp.route('/users/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    try:
+        # Get the identity (username) from the refresh token
+        current_user = get_jwt_identity()
+
+        # Generate a new access token
+        new_access_token = create_access_token(identity=current_user)
+
+        return jsonify({
+            'message': 'Access token refreshed successfully',
+            'token': {
+                'access_token': new_access_token
+            }
+        }), 200
+    except Exception as e:
+        # Handle other exceptions if needed
+        return jsonify(
+            {'error': f'An error occurred during token refresh: {str(e)}'}
+            ), 500
+
+@user_bp.route('/users/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    try:
+        jti = get_jwt()["jti"]
+
+        # Add the JTI to the blocklist
+        TokenBlocklist.create(jti=jti)
+        print(TokenBlocklist.query.all())
+
+        return jsonify({'message': 'Successfully logged out'}), 200
+
+    except Exception as e:
+        print(f"Error during logout: {e}")
+        return jsonify({'error': 'An error occurred during logout'}), 500

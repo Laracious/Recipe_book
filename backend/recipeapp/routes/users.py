@@ -14,13 +14,19 @@ from recipeapp.utils.data_validation import (
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
 
-@user_bp.route('users/all', methods=['GET'])
+@user_bp.route('/users/all', methods=['GET'])
 @jwt_required()
 def get_all_users():
     """Gets all users"""
+    current_user_id = get_jwt_identity()
+    current_user = User.find_one(username=current_user_id)
+
+    # Check if the current user is an admin
+    if not current_user or not current_user.is_admin:
+        return jsonify({'error': 'Access denied. Admins only.'}), 403
+
     try:
         users = User.get_all()
-
         user_list = [user.format() for user in users]
 
         return jsonify({'users': user_list})
@@ -129,6 +135,12 @@ def update_user(user_id):
 @jwt_required()
 def delete_user(user_id):
     """Deletes a particular User"""
+    curren_user_id = get_jwt_identity()
+    curren_user = User.find_one(username=curren_user_id)
+    
+    # Check if the current user is an admin
+    if not curren_user or not curren_user.is_admin:
+        return jsonify({'error': 'Access denied. Admins only.'}), 403
     try:
         #validate user_id
         validate_uuid(user_id)
@@ -151,14 +163,11 @@ def login():
     try:
         if user and user.check_password(data.get('password')):
             # Set the expiration time for the access token (e.g., 15 minutes)
-            access_token = create_access_token(
-                identity=user.username,
-                expires_delta=timedelta(minutes=15)
-                )
+            access_token = create_access_token(identity=user.username)
             
-            # Set the expiration time for the refresh token (e.g., 7 days)
+            # Set the expiration time for the refresh token
             refresh_token = create_refresh_token(
-                identity=user.username, 
+                identity=user.username,
                 expires_delta=timedelta(days=7)
                 )
             
@@ -214,3 +223,26 @@ def logout():
     except Exception as e:
         print(f"Error during logout: {e}")
         return jsonify({'error': 'An error occurred during logout'}), 500
+
+
+@user_bp.route('/users/<string:username>/promote', methods=['POST'])
+@jwt_required()
+def promote_user(username):
+    current_user = get_jwt_identity()
+
+    # Check if the current user is an admin
+    user = User.find_one(user_id=current_user)
+    if not user or not user.is_admin:
+        return jsonify({'error': 'Access denied. Admins only.'}), 403
+
+    # Find the user to be promoted
+    user_to_promote = User.find_one(username=username)
+    if not user_to_promote:
+        return jsonify({'error': 'User not found.'}), 404
+
+    # Update the user's is_admin field to True
+    user_to_promote.update(is_admin=True)
+
+    return jsonify(
+        {'message': f'User {username} has been promoted to admin.'}
+        ), 200

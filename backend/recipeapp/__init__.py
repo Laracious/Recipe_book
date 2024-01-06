@@ -116,12 +116,16 @@ def create_app(config):
             'error': 'token_revoked'
         }), 401
     
-    # additional claims
+    
+    from recipeapp.models.user import User
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity):
         if identity == "imuaz":
-            return {'is_admin': True}
-        return {'is_admin': False} 
+            user = User.query.filter_by(username=identity).first()
+            if user:
+                user.is_admin = True
+                db.session.commit()
+        return None
     
     # Callback function to check if a JWT exists in the blocklist
     from recipeapp.models.jwt_blocklist import TokenBlocklist

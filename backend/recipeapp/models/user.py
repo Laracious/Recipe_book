@@ -14,7 +14,7 @@ class User(BaseModel, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
-    
+    otp = db.Column(db.Integer, nullable=True)
 
     # Correct relationship definition with class name 'Recipe'
     recipes = db.relationship('Recipe', backref='user', lazy=True)
@@ -43,6 +43,7 @@ class User(BaseModel, UserMixin):
         self.password = kwargs.get('password')
         self.is_admin = kwargs.get('is_admin', False)
         self.recipes = kwargs.get('recipes', [])
+        self.otp = kwargs.get('otp')
         self.bookmarks = kwargs.get('bookmarks', [])
         
         #Hash the password in the initialization

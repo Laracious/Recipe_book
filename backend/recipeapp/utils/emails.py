@@ -17,26 +17,27 @@ def send_email(email, subject, template, template_data):
                 sender = "noreply@app.com"
                 msg = Message(msg_title, sender=sender, recipients=[email])
                 msg.html = render_template(template, data=template_data)
-                print('Thrend sending email')
                 thr = threading.Thread(target=send_async_email, args=(current_app._get_current_object(), msg))
-                print('threading started')
                 thr.start()
     except Exception as e:
         return {'msg': 'Email not sent', 'error': str(e)}
 
 # Sending password reset email
 def reset_password_otp(name, email, otp):
-    subject = 'Verification Code'
-    template = 'password-reset.html'
-    template_data = {
-        'app_name': 'Recipe App',
-        'title': 'Password Reset OTP - Recipe App',
-        'body': 'Please use this verification code to reset your password',
-        'name': name,
-        'otp': otp
-    }
-    print('sending email')
-    send_email(email, subject, template, template_data)
+    try:
+        subject = 'Verification Code'
+        template = 'password-reset.html'
+        template_data = {
+            'app_name': 'Recipe App',
+            'title': 'Password Reset OTP - Recipe App',
+            'body': 'Please use this verification code to reset your password',
+            'name': name,
+            'otp': otp
+        }
+        print('sending email')
+        send_email(email, subject, template, template_data)
+    except Exception as e:
+        print(f"Error sending email: {e}")
 
 # Sending OTP for registration or password reset
 def send_otp_email(name, email, otp):
@@ -61,4 +62,4 @@ def welcome_email(name, email):
         'body': 'Welcome to Foodie. Please use this verification code to confirm your registration',
         'name': name
     }
-    send_email(name, email, subject, template, template_data)ss
+    send_email(name, email, subject, template, template_data)

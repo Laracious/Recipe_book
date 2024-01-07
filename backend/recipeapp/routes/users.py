@@ -1,4 +1,4 @@
-import randint 
+from random import randint
 from flask import Blueprint, request, jsonify
 from datetime import timedelta
 from flask_jwt_extended import (
@@ -12,6 +12,7 @@ from recipeapp.utils.data_validation import (
     validate_email, validate_psswd,
     validate_username, validate_uuid
 )
+from werkzeug.security import generate_password_hash
 from recipeapp.models.schemas import UserSchema
 from recipeapp.utils.emails import reset_password_otp
 
@@ -84,7 +85,7 @@ def create_user():
 def get_user(user_id):
     """Finds a user associated with user_id and returns it"""
     try:
-        #validate user_id
+        # validate user_id
         validate_uuid(user_id)
         
         user = User.find_one(id=user_id)
@@ -169,6 +170,12 @@ def delete_user(user_id):
 @user_bp.route('/users/login', methods=['POST'])
 def login():
     """Logs in a user"""
+    # Validate the json data and check if email and password are present
+    mandatory_fields = ['email', 'password']
+    for field in mandatory_fields:
+        if not data.get(field):
+            return jsonify({'error': f'{field} is required'}), 400
+
     data = request.get_json()
     user = User.find_one(email=data.get('email'))
 
@@ -303,7 +310,7 @@ def verify_otp():
         if user.otp != otp:
             return jsonify({'error': 'Invalid OTP'}), 400
 
-        user.password = new_password
+        user.password = generate_password_hash(new_password)
         user.save()
         return jsonify({'message': 'Password reset successfully'}), 200
     except Exception as e:

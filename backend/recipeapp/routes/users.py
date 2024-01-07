@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from datetime import timedelta
 from flask_jwt_extended import (
     create_access_token, 
-    jwt_required, get_jwt,
+    jwt_required, get_jwt, current_user,
     get_jwt_identity, create_refresh_token
 )
 from recipeapp.models.jwt_blocklist import TokenBlocklist
@@ -11,6 +11,7 @@ from recipeapp.utils.data_validation import (
     validate_email, validate_psswd,
     validate_username, validate_uuid
 )
+from recipeapp.models.schemas import UserSchema
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
 
@@ -18,20 +19,19 @@ user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
 @jwt_required()
 def get_all_users():
     """Gets all users"""
-    current_user_id = get_jwt_identity()
-    current_user = User.find_one(username=current_user_id)
-
     # Check if the current user is an admin
-    if not current_user or not current_user.is_admin:
-        return jsonify({'error': 'Access denied. Admins only.'}), 403
+    if current_user and current_user.is_admin:
+        try:
+            users = User.get_all()
+            # Serialize the list of users using the UserSchema
+            user_schema = UserSchema(many=True)
+            user_list = user_schema.dump(users)
 
-    try:
-        users = User.get_all()
-        user_list = [user.format() for user in users]
-
-        return jsonify({'users': user_list})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+            return jsonify({'users': user_list})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    return jsonify({'error': 'Access denied. Admins only.'}), 403
     
 @user_bp.route('/users/signup', methods=['POST'])
 def create_user():
@@ -40,7 +40,13 @@ def create_user():
     try:
         data = request.get_json()
         
-        #validat data
+        #validate data are present
+        mandatory_fields = ['username', 'full_name', 'email', 'password']
+        for field in mandatory_fields:
+            if not data.get(field):
+                return jsonify({'error': f'{field} is required'}), 400
+        
+        # Validate data
         validate_psswd(data.get('password'))
         validate_email(data.get('email'))
         validate_username(data.get('username'))
@@ -53,17 +59,21 @@ def create_user():
             return jsonify(
                 {'error': 'Username or email already registered'}), 400
         
-        # Create New user
+        # Create new user
         new_user = User.create(
             username=data.get('username'),
             full_name=data.get('full_name'),
             email=data.get('email'),
-            password= data.get('password')
-            )
+            password=data.get('password')
+        )
+        
+        # Serialize the user using the UserSchema
+        user_schema = UserSchema()
+        serialized_user = user_schema.dump(new_user)
         
         return jsonify({
-            'message': 'User created successfully', 'user': new_user.format()
-            }), 201
+            'message': 'User created successfully', 'user': serialized_user
+        }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
@@ -76,8 +86,9 @@ def get_user(user_id):
         validate_uuid(user_id)
         
         user = User.find_one(id=user_id)
+        user_schema = UserSchema()
         if user:
-            return jsonify(user.format())
+            return jsonify(user_schema.dump(user))
         else:
             return jsonify({'message': 'User not found'}), 404
     except Exception as e:
@@ -135,24 +146,23 @@ def update_user(user_id):
 @jwt_required()
 def delete_user(user_id):
     """Deletes a particular User"""
-    curren_user_id = get_jwt_identity()
-    curren_user = User.find_one(username=curren_user_id)
-    
+
     # Check if the current user is an admin
-    if not curren_user or not curren_user.is_admin:
-        return jsonify({'error': 'Access denied. Admins only.'}), 403
-    try:
-        #validate user_id
-        validate_uuid(user_id)
-        
-        user = User.find_one(id=user_id)
-        if user:
-            user.delete()
-            return jsonify({'message': 'User deleted successfully'})
-        else:
-            return jsonify({'message': 'User not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    if current_user and current_user.is_admin:
+        try:
+            #validate user_id
+            validate_uuid(user_id)
+            
+            user = User.find_one(id=user_id)
+            if user:
+                user.delete()
+                return jsonify({'message': 'User deleted successfully'})
+            else:
+                return jsonify({'message': 'User not found'}), 404
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    return jsonify({'error': 'Access denied. Admins only.'}), 403
 
 @user_bp.route('/users/login', methods=['POST'])
 def login():

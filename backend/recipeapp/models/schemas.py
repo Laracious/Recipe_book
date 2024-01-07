@@ -4,21 +4,22 @@ class UserSchema(Schema):
     """User Schema"""
     id = fields.String(dump_only=True)
     username = fields.String(
-        required=True, validate=validate.Length(min=1, max=100))
+        required=True, validate=validate.Length(min=1, max=100)
+    )
     full_name = fields.String(
-        required=True, validate=validate.Length(min=1, max=100))
+        required=True, validate=validate.Length(min=1, max=100)
+    )
     email = fields.Email(required=True)
     password = fields.String(required=True, load_only=True)
     is_admin = fields.Boolean()
     recipes = fields.List(fields.Nested('RecipeSchema', exclude=('user',)))
-    bookmarks = fields.List(
-        fields.Nested('RecipeSchema', exclude=('bookmarked_by',)))
-
+    bookmarks = fields.List(fields.Nested('BookmarkSchema', exclude=('user_id',)))
 class RecipeSchema(Schema):
     """Recipe Schema"""
     id = fields.String(dump_only=True)
     name = fields.String(
-        required=True, validate=validate.Length(min=1, max=200))
+        required=True, validate=validate.Length(min=1, max=200)
+    )
     description = fields.String()
     instructions = fields.String()
     user_id = fields.String(required=True)
@@ -32,3 +33,11 @@ class BookmarkSchema(Schema):
     id = fields.String(dump_only=True)
     user_id = fields.String(required=True)
     recipe_id = fields.String(required=True)
+
+class TokenBlocklistSchema(Schema):
+    """
+    Schema for the TokenBlocklist model.
+    """
+    id = fields.String(dump_only=True)
+    jti = fields.String(required=True)
+    expires_at = fields.DateTime(dump_only=True)

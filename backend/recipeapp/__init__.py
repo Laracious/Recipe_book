@@ -133,6 +133,12 @@ def create_app(config):
     def check_if_token_revoked(jwt_header, jwt_payload):
         jti = jwt_payload["jti"]
         return TokenBlocklist.is_jti_blacklisted(jti)
+    
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        identity = jwt_data["sub"]
+        return User.query.filter_by(username=identity).one_or_none()
+    
     # @jwt.user_claims_loader
     # def add_claims_to_user(user):
     #     return {'is_admin': user.is_admin}
@@ -141,10 +147,6 @@ def create_app(config):
     # def user_identity_lookup(user):
     #     return user.id
     
-    # @jwt.user_lookup_loader
-    # def user_lookup_callback(_jwt_header, jwt_data):
-    #     identity = jwt_data["sub"]
-    #     return User.query.filter_by(id=identity).one_or_none()
     
 
     # # Initialize Flask-Mail

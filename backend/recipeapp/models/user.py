@@ -54,6 +54,12 @@ class User(BaseModel, UserMixin):
         """Check if the provided password matches the user's hashed password"""
         return check_password_hash(self.password, password)
     
+    @classmethod
+    def find_one_with_relationships(cls, **kwargs):
+        return cls.query.options(
+            db.joinedload(cls.recipes), db.joinedload(cls.bookmarks)
+            ).filter_by(**kwargs).one_or_none()
+
     def format(self):
         """Convert the recipe object to a dictionary"""
         return {

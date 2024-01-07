@@ -88,7 +88,7 @@ def get_user(user_id):
         # validate user_id
         validate_uuid(user_id)
         
-        user = User.find_one(id=user_id)
+        user = User.find_one_with_relationships(id=user_id)
         user_schema = UserSchema()
         if user:
             return jsonify(user_schema.dump(user))
@@ -171,12 +171,14 @@ def delete_user(user_id):
 def login():
     """Logs in a user"""
     # Validate the json data and check if email and password are present
+
+    data = request.get_json()
+    
+    # Validate the json data and check if email and password are present
     mandatory_fields = ['email', 'password']
     for field in mandatory_fields:
         if not data.get(field):
             return jsonify({'error': f'{field} is required'}), 400
-
-    data = request.get_json()
     user = User.find_one(email=data.get('email'))
 
     try:

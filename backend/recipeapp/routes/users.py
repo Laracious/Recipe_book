@@ -1,3 +1,4 @@
+import randint 
 from flask import Blueprint, request, jsonify
 from datetime import timedelta
 from flask_jwt_extended import (
@@ -12,6 +13,7 @@ from recipeapp.utils.data_validation import (
     validate_username, validate_uuid
 )
 from recipeapp.models.schemas import UserSchema
+from recipeapp.utils.emails import reset_password_otp
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
 
@@ -256,3 +258,53 @@ def promote_user(username):
     return jsonify(
         {'message': f'User {username} has been promoted to admin.'}
         ), 200
+    
+   
+def generate_otp():
+    return randint(100000, 999999)
+# Endpoint to reset password, input email, generate otp then send to the mail
+@user_bp.route('/users/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    email = data.get('email')
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+    user = User.find_one(email=email)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    otp = generate_otp()
+    user.otp = otp
+    user.save()
+    reset_password_otp(user.full_name, email, otp)
+    return jsonify({'message': 'OTP sent successfully', 'otp': otp}), 200
+
+
+# Endpoint to verify otp and reset password
+@user_bp.route('/users/verify-otp', methods=['POST'])
+def verify_otp():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        otp = data.get('otp')
+        new_password = data.get('new_password')
+
+        # confirm if all the fields are present
+        mandatory_fields = ['email', 'otp', 'new_password']
+        for field in mandatory_fields:
+            if not data.get(field):
+                return jsonify({'error': f'{field} is required'}), 400
+
+        user = User.find_one(email=email)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        validate_psswd(new_password)
+
+        if user.otp != otp:
+            return jsonify({'error': 'Invalid OTP'}), 400
+
+        user.password = new_password
+        user.save()
+        return jsonify({'message': 'Password reset successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500 

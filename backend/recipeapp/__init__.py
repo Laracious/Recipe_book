@@ -59,12 +59,12 @@ def create_app(config):
     # Secret key
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     # Flask-Mail
-    app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
-    app.config['MAIL_PORT'] = 587 # 465
-    app.config['MAIL_USE_TLS'] = True # False
+    app.config['MAIL_SERVER'] = 'smtp.mail.yahoo.com' #'smtp.googlemail.com'
+    app.config['MAIL_PORT'] = 465 # 587
+    app.config['MAIL_USE_SSL'] = True # False
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-    app.config['MAIL_DEFAULT_SENDER'] = 'your-email@example.com'
+    app.config['MAIL_DEFAULT_SENDER'] = 'muazuidrisyakub@yahoo.com'
 
     # JWT
     app.config['ACCESS_SECRET_KEY'] = os.getenv('ACCESS_SECRET_KEY')
@@ -127,17 +127,17 @@ def create_app(config):
                 db.session.commit()
         return None
     
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        identity = jwt_data["sub"]
+        return User.query.filter_by(email=identity).one_or_none()
+    
     # Callback function to check if a JWT exists in the blocklist
     from recipeapp.models.jwt_blocklist import TokenBlocklist
     @jwt.token_in_blocklist_loader
     def check_if_token_revoked(jwt_header, jwt_payload):
         jti = jwt_payload["jti"]
         return TokenBlocklist.is_jti_blacklisted(jti)
-    
-    @jwt.user_lookup_loader
-    def user_lookup_callback(_jwt_header, jwt_data):
-        identity = jwt_data["sub"]
-        return User.query.filter_by(username=identity).one_or_none()
     
     # @jwt.user_claims_loader
     # def add_claims_to_user(user):

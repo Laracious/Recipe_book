@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from recipeapp.models.recipe import Recipe
 from recipeapp.utils.data_validation import validate_uuid
 from recipeapp import db
+from recipeapp.models.schemas import RecipeSchema, PaginationSchema
 
 recipe_bp = Blueprint('recipe', __name__, url_prefix='/api/v1')
 
@@ -149,6 +150,7 @@ def get_all_recipes():
         recipes_data = [recipe.format() for recipe in recipes.items]
 
         # Return the paginated list of recipes as JSON
+    
         return jsonify({
             "recipes": recipes_data,
             "page": page,
@@ -156,6 +158,7 @@ def get_all_recipes():
             "total_items": recipes.total,
             "total_pages": recipes.pages
         })
+
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

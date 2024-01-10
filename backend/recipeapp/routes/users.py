@@ -12,8 +12,8 @@ from recipeapp.utils.data_validation import (
     validate_email, validate_psswd,
     validate_username, validate_uuid
 )
-from werkzeug.security import generate_password_hash
-from recipeapp.models.schemas import UserSchema
+from werkzeug.security import generate_password_hash, check_password_hash
+from recipeapp.models.schemas import UserSchema, UserUpdateSchema
 from recipeapp.utils.emails import reset_password_otp
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
@@ -102,49 +102,41 @@ def get_user(user_id):
 def update_user(user_id):
     """Updates a particular User"""
     try:
-        #validate user_id
+        # Validate user_id
         validate_uuid(user_id)
-        
-        #get the json data
+
+        # Get the JSON data
         data = request.get_json()
-        
-        # Validate the json data
-        validate_psswd(data.get('password'))
-        validate_email(data.get('email'))
-        validate_username(data.get('username'))
-        
-        user = User.find_one(id=user_id)
 
-        if user:
-            """
-            Checks if the updated email or username already exists for
-            another user"""
-            existed_user_by_email = User.find_one(email=data.get('email'))
-            existed_user_by_username = User.find_one(
-                username=data.get('username')
-                )
+        if 'username' not in data:
+            return jsonify({'error': 'Username is required'}), 400
 
-            if existed_user_by_email and existed_user_by_email.id != user.id:
-                return jsonify(
-                    {'error': 'Email already exists for another user'}), 400
+        # Verify the password
+        if not current_user.check_password(data.get('password')):
+            return jsonify({'error': 'Invalid password'}), 400
 
-            if existed_user_by_username and existed_user_by_username.id != user.id:  # nopep8
-                return jsonify({
-                    'error': 'Username already exists for another user'}), 400
-
-            # Update the user with the data from the JSON
-            user.update(**data)
-            user.save()
-
+        # Check if the updated username already exists for another user
+        existing_username = User.find_one(
+            username=data.get('username'))
+        if existing_username and existing_username.id != current_user.id:
             return jsonify(
-                {'message': 'User updated successfully', 'user': user.format()
-                 }
-                )
-        else:
-            return jsonify({'message': 'User not found'}), 404
+                {'error': 'Username already exists for another user'}), 400
+        
+        # Update the user with the data from the JSON
+        current_user.update(
+            username=data.get('username'),
+            full_name=data.get('full_name')
+        )
+        current_user.save()
+
+        # Return a success message
+        return jsonify({
+            'message': 'User updated successfully',
+            "user": UserSchema().dump(current_user)
+            }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
+    
 @user_bp.route('/users/<user_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(user_id):
@@ -184,11 +176,11 @@ def login():
     try:
         if user and user.check_password(data.get('password')):
             # Set the expiration time for the access token (e.g., 15 minutes)
-            access_token = create_access_token(identity=user.username)
+            access_token = create_access_token(identity=user.email)
             
             # Set the expiration time for the refresh token
             refresh_token = create_refresh_token(
-                identity=user.username,
+                identity=user.email,
                 expires_delta=timedelta(days=7)
                 )
             

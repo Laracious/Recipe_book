@@ -14,7 +14,7 @@ def send_email(email, subject, template, template_data):
     try:
         with current_app.app_context():
                 msg_title = subject
-                sender = "noreply@app.com"
+                sender = "muazuidrisyakub@yahoo.com"
                 msg = Message(msg_title, sender=sender, recipients=[email])
                 msg.html = render_template(template, data=template_data)
                 thr = threading.Thread(target=send_async_email, args=(current_app._get_current_object(), msg))

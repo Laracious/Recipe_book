@@ -14,6 +14,10 @@ class UserSchema(Schema):
     is_admin = fields.Boolean()
     recipes = fields.List(fields.Nested('RecipeSchema', exclude=('user',)))
     bookmarks = fields.List(fields.Nested('BookmarkSchema', exclude=('user_id',)))
+
+class UserUpdateSchema(UserSchema):
+    # Override the password field to make it optional
+    password = fields.String(required=False)
 class RecipeSchema(Schema):
     """Recipe Schema"""
     id = fields.String(dump_only=True)
@@ -27,6 +31,13 @@ class RecipeSchema(Schema):
     user_rating = fields.Dict()
     ingredients = fields.Dict()
     image = fields.String()
+
+class PaginationSchema(Schema):
+    """Schema for pagination information"""
+    page = fields.Integer()
+    per_page = fields.Integer()
+    total_items = fields.Integer()
+    total_pages = fields.Integer()
 
 class BookmarkSchema(Schema):
     """Bookmark Schema"""

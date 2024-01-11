@@ -46,7 +46,7 @@ class Recipe(BaseModel):
             "name": self.name,
             "description": self.description,
             "instructions": self.instructions,
-            "user_id": self.user_id,
+            #"user_id": self.user_id,
             "video": self.video,
             "user_rating": self.user_rating,
             "ingredients": self.ingredients,

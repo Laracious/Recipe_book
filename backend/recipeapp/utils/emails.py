@@ -17,7 +17,9 @@ def send_email(email, subject, template, template_data):
                 sender = "muazuidrisyakub@yahoo.com"
                 msg = Message(msg_title, sender=sender, recipients=[email])
                 msg.html = render_template(template, data=template_data)
-                thr = threading.Thread(target=send_async_email, args=(current_app._get_current_object(), msg))
+                thr = threading.Thread(
+                    target=send_async_email,
+                    args=(current_app._get_current_object(), msg))
                 thr.start()
     except Exception as e:
         return {'msg': 'Email not sent', 'error': str(e)}
@@ -30,7 +32,8 @@ def reset_password_otp(name, email, otp):
         template_data = {
             'app_name': 'Recipe App',
             'title': 'Password Reset OTP - Recipe App',
-            'body': 'Please use this verification code to reset your password',
+            'body':
+                'Please use this verification code to reset your password',
             'name': name,
             'otp': otp
         }
@@ -46,11 +49,12 @@ def send_otp_email(name, email, otp):
     template_data = {
         'app_name': 'Foodie',
         'title': 'Registration Confirmation - Foodie',
-        'body': 'Please use this verification code to confirm your registration',
+        'body':
+            'Please use this verification code to confirm your registration',
         'name': name,
         'otp': otp
     }
-    send_email(name, email, subject, template, template_data)
+    send_email(email, subject, template, template_data)
 
 # Sending welcome email
 def welcome_email(name, email):
@@ -59,7 +63,9 @@ def welcome_email(name, email):
     template_data = {
         'app_name': 'Foodie',
         'title': 'Welcome to Foodie - Foodie',
-        'body': 'Welcome to Foodie. Please use this verification code to confirm your registration',
+        'body':
+            'Welcome to Foodie. Please use this\
+                verification code to confirm your registration',
         'name': name
     }
-    send_email(name, email, subject, template, template_data)
+    send_email(email, subject, template, template_data)

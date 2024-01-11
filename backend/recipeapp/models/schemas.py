@@ -12,8 +12,9 @@ class UserSchema(Schema):
     email = fields.Email(required=True)
     password = fields.String(required=True, load_only=True)
     is_admin = fields.Boolean()
-    recipes = fields.List(fields.Nested('RecipeSchema', exclude=('user',)))
-    bookmarks = fields.List(fields.Nested('BookmarkSchema', exclude=('user_id',)))
+    verified = fields.Boolean()
+    #recipes = fields.List(fields.Nested('RecipeSchema', exclude=('user',)))
+    #bookmarks = fields.List(fields.Nested('BookmarkSchema', exclude=('user_id',)))
 
 class UserUpdateSchema(UserSchema):
     # Override the password field to make it optional

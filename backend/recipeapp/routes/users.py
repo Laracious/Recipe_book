@@ -14,9 +14,15 @@ from recipeapp.utils.data_validation import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from recipeapp.models.schemas import UserSchema, UserUpdateSchema
-from recipeapp.utils.emails import reset_password_otp
+from recipeapp.utils.emails import (
+    reset_password_otp, send_otp_email, welcome_email
+)
+
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
+
+def generate_otp():
+    return randint(100000, 999999)
 
 @user_bp.route('/users/all', methods=['GET'])
 @jwt_required()
@@ -35,7 +41,7 @@ def get_all_users():
             return jsonify({'error': str(e)}), 500
     
     return jsonify({'error': 'Access denied. Admins only.'}), 403
-    
+ 
 @user_bp.route('/users/signup', methods=['POST'])
 def create_user():
     """Registers a new user and returns it"""
@@ -69,16 +75,117 @@ def create_user():
             email=data.get('email'),
             password=data.get('password')
         )
+
+        # generate a 6-digit OTP
+        otp = generate_otp()
+
+        # store the OTP in the user's record
+        new_user.otp = otp
+        new_user.save()
+
+        # send the verification email with the OTP
+        send_otp_email(new_user.full_name, new_user.email, otp)
         
         # Serialize the user using the UserSchema
         user_schema = UserSchema()
         serialized_user = user_schema.dump(new_user)
         
         return jsonify({
-            'message': 'User created successfully', 'user': serialized_user
+            'message': 'User created successfully. \
+                A verification email has been sent to your email address.\
+                    Please check your inbox and follow the instructions.',
+            'user': serialized_user
         }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+ 
+ 
+@user_bp.route('/users/verify_email', methods=['POST'])
+def verify_email():
+    """Verifies a user's email and sends a welcome email"""
+
+    try:
+        data = request.get_json()
+
+        # validate data are present
+        mandatory_fields = ['email', 'otp']
+        for field in mandatory_fields:
+            if not data.get(field):
+                return jsonify({'error': f'{field} is required'}), 400
+
+        # get the user by email from the database
+        user = User.find_one(email=data.get('email'))
+
+        # check if the user exists
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # check if the user is already verified
+        if user.verified:
+            return jsonify({'message': 'User already verified'}), 200
+
+        # check if the OTP matches
+        if user.otp == data.get('otp'):
+            # update the user's verified status to True
+            user.verified = True
+            user.save()
+            
+            # send the welcome email
+            welcome_email(user.full_name, user.email)
+
+            # return a success message
+            return jsonify({'message': 'User verified successfully'}), 200
+        else:
+            # return an error message
+            return jsonify({'error': 'Invalid OTP'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+ 
+    
+# @user_bp.route('/users/signup', methods=['POST'])
+# def create_user():
+#     """Registers a new user and returns it"""
+    
+#     try:
+#         data = request.get_json()
+        
+#         #validate data are present
+#         mandatory_fields = ['username', 'full_name', 'email', 'password']
+#         for field in mandatory_fields:
+#             if not data.get(field):
+#                 return jsonify({'error': f'{field} is required'}), 400
+        
+#         # Validate data
+#         validate_psswd(data.get('password'))
+#         validate_email(data.get('email'))
+#         validate_username(data.get('username'))
+        
+#         # Check if the username or email is already registered
+#         existing_user_email = User.find_one(email=data.get('email'))
+#         existing_user_username = User.find_one(username=data.get('username'))
+        
+#         if existing_user_email or existing_user_username:
+#             return jsonify(
+#                 {'error': 'Username or email already registered'}), 400
+        
+#         # Create new user
+#         new_user = User.create(
+#             username=data.get('username'),
+#             full_name=data.get('full_name'),
+#             email=data.get('email'),
+#             password=data.get('password')
+#         )
+        
+#         # Serialize the user using the UserSchema
+#         user_schema = UserSchema()
+#         serialized_user = user_schema.dump(new_user)
+        
+#         return jsonify({
+#             'message': 'User created successfully', 'user': serialized_user
+#         }), 201
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
     
 @user_bp.route('/users/<user_id>', methods=['GET'])
 @jwt_required()
@@ -260,9 +367,7 @@ def promote_user(username):
         {'message': f'User {username} has been promoted to admin.'}
         ), 200
     
-   
-def generate_otp():
-    return randint(100000, 999999)
+
 # Endpoint to reset password, input email, generate otp then send to the mail
 @user_bp.route('/users/reset-password', methods=['POST'])
 def reset_password():

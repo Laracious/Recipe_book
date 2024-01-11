@@ -30,8 +30,8 @@ def reset_password_otp(name, email, otp):
         subject = 'Verification Code'
         template = 'password-reset.html'
         template_data = {
-            'app_name': 'Recipe App',
-            'title': 'Password Reset OTP - Recipe App',
+            'app_name': 'Recipe Book',
+            'title': 'Password Reset OTP - Recipe Book',
             'body':
                 'Please use this verification code to reset your password',
             'name': name,
@@ -47,8 +47,8 @@ def send_otp_email(name, email, otp):
     subject = 'Verification Code'
     template = 'email_otp.html'
     template_data = {
-        'app_name': 'Foodie',
-        'title': 'Registration Confirmation - Foodie',
+        'app_name': 'Recipe Book',
+        'title': 'Registration Confirmation - Recipe Book',
         'body':
             'Please use this verification code to confirm your registration',
         'name': name,
@@ -61,8 +61,8 @@ def welcome_email(name, email):
     subject = 'Welcome to Foodie'
     template = 'welcome_email.html'
     template_data = {
-        'app_name': 'Foodie',
-        'title': 'Welcome to Foodie - Foodie',
+        'app_name': 'Recipe Book',
+        'title': 'Welcome to Foodie - Recipe Book',
         'body':
             'Welcome to Foodie. Please use this\
                 verification code to confirm your registration',

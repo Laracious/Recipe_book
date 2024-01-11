@@ -70,7 +70,7 @@ class Recipe(BaseModel):
             )
         if total_ratings > 0:
             self.user_rating["score"] = round(
-                (self.user_rating["count_positive"] / total_ratings) * 100, 6
+                (self.user_rating["count_positive"] / total_ratings) * 10, 4
                 )
         else:
             self.user_rating["score"] = 0

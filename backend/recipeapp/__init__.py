@@ -139,15 +139,6 @@ def create_app(config):
         jti = jwt_payload["jti"]
         return TokenBlocklist.is_jti_blacklisted(jti)
     
-    # @jwt.user_claims_loader
-    # def add_claims_to_user(user):
-    #     return {'is_admin': user.is_admin}
-    
-    # @jwt.user_identity_loader
-    # def user_identity_lookup(user):
-    #     return user.id
-    
-    
 
     # # Initialize Flask-Mail
     mail.init_app(app)  # Initialize Flask-Mail with your app
@@ -156,11 +147,13 @@ def create_app(config):
     from recipeapp.routes.users import user_bp
     from recipeapp.routes.recipes import recipe_bp
     from recipeapp.routes.bookmark import bookmark_bp
+    from recipeapp.auth.auth import auth_bp
 
     # register blueprint
     app.register_blueprint(user_bp)
     app.register_blueprint(recipe_bp)
     app.register_blueprint(bookmark_bp)
+    app.register_blueprint(auth_bp)
 
     # create db tables from models if not exists
     with app.app_context():

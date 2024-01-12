@@ -1,5 +1,4 @@
 from .base_model import BaseModel, db
-from json import JSONEncoder
 
 
 class Recipe(BaseModel):
@@ -9,7 +8,8 @@ class Recipe(BaseModel):
 
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    instructions = db.Column(db.Text, nullable=True)
+    instructions = db.Column(db.JSON, nullable=True)
+    # instructions = db.Column(db.Text, nullable=True)
     user_id = db.Column(
         db.String(22), 
         db.ForeignKey('user.id'), 
@@ -39,19 +39,19 @@ class Recipe(BaseModel):
         self.ingredients = kwargs.get('ingredients')
         self.image = kwargs.get('image')
 
-    def format(self):
-        """Convert the recipe object to a dictionary"""
-        return {
-            "id": self.id,
-            "name": self.name,
-            "description": self.description,
-            "instructions": self.instructions,
-            #"user_id": self.user_id,
-            "video": self.video,
-            "user_rating": self.user_rating,
-            "ingredients": self.ingredients,
-            "image": self.image
-            }
+    # def format(self):
+    #     """Convert the recipe object to a dictionary"""
+    #     return {
+    #         "id": self.id,
+    #         "name": self.name,
+    #         "description": self.description,
+    #         "instructions": self.instructions,  # Now instructions is stored as a JSON-like object
+    #         # "user_id": self.user_id,  # Uncomment if you want to include user_id
+    #         "video": self.video,
+    #         "user_rating": self.user_rating,
+    #         "ingredients": self.ingredients,
+    #         "image": self.image
+    #     }
 
     def add_positive_rating(self):
         """Increment positive user rating count and update the score"""

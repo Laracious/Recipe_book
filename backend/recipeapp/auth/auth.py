@@ -200,8 +200,7 @@ def logout():
 
         # Add the JTI to the blocklist
         TokenBlocklist.create(jti=jti)
-        print(TokenBlocklist.query.all())
-
+        
         return jsonify({'message': 'Successfully logged out'}), 200
 
     except Exception as e:

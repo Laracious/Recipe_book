@@ -19,19 +19,25 @@ class UserSchema(Schema):
 class UserUpdateSchema(UserSchema):
     # Override the password field to make it optional
     password = fields.String(required=False)
+class InstructionSchema(Schema):
+    step1 = fields.Str()
+    step2 = fields.Str()
+    step3 = fields.Str()
+
+class UserRatingSchema(Schema):
+    count_negative = fields.Int()
+    count_positive = fields.Int()
+    score = fields.Float()
+
 class RecipeSchema(Schema):
-    """Recipe Schema"""
-    id = fields.String(dump_only=True)
-    name = fields.String(
-        required=True, validate=validate.Length(min=1, max=200)
-    )
-    description = fields.String()
-    instructions = fields.String()
-    user_id = fields.String(required=True)
-    video = fields.String()
-    user_rating = fields.Dict()
-    ingredients = fields.Dict()
-    image = fields.String()
+    id = fields.Str()
+    name = fields.Str()
+    description = fields.Str()
+    image = fields.Str()
+    ingredients = fields.List(fields.Str(), allow_none=True)
+    instructions = fields.Nested(InstructionSchema)
+    user_rating = fields.Nested(UserRatingSchema)
+    video = fields.Str()
 
 class PaginationSchema(Schema):
     """Schema for pagination information"""

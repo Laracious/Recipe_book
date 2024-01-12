@@ -74,7 +74,7 @@ def create_app(config):
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
     jwt = JWTManager(app)  # Instantiate the JWTManager class
-    jwt.init_app(app)  # initialize the JWTManager with your app
+    # jwt.init_app(app)  # initialize the JWTManager with your app
     
     # Initialize the scheduler
     scheduler.init_app(app)
@@ -120,12 +120,13 @@ def create_app(config):
     from recipeapp.models.user import User
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity):
-        if identity == "imuaz":
-            user = User.query.filter_by(username=identity).first()
+        if identity == "iman@gmail.com":
+            user = User.query.filter_by(email=identity).first()
             if user:
                 user.is_admin = True
                 db.session.commit()
         return None
+
     
     @jwt.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data):
@@ -142,6 +143,7 @@ def create_app(config):
 
     # # Initialize Flask-Mail
     mail.init_app(app)  # Initialize Flask-Mail with your app
+    jwt.init_app(app)  # initialize the JWTManager with your app
 
     # imports blueprints
     from recipeapp.routes.users import user_bp

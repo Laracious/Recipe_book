@@ -39,12 +39,12 @@ class RecipeSchema(Schema):
     user_rating = fields.Nested(UserRatingSchema)
     video = fields.Str()
 
-class PaginationSchema(Schema):
-    """Schema for pagination information"""
-    page = fields.Integer()
-    per_page = fields.Integer()
-    total_items = fields.Integer()
-    total_pages = fields.Integer()
+# class PaginationSchema(Schema):
+#     """Schema for pagination information"""
+#     page = fields.Integer()
+#     per_page = fields.Integer()
+#     total_items = fields.Integer()
+#     total_pages = fields.Integer()
 
 class BookmarkSchema(Schema):
     """Bookmark Schema"""

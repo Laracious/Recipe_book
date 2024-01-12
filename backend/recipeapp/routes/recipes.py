@@ -183,23 +183,21 @@ def get_all_recipes():
         recipes = Recipe.query.paginate(
             page=page, per_page=per_page, error_out=False)
 
-        # Convert paginated recipes to a list of dictionaries
-        recipes_data = [recipe.format() for recipe in recipes.items]
+        # Serialize the paginated recipes using the Marshmallow schema
+        recipe_schema = RecipeSchema(many=True)
+        serialized_recipes = recipe_schema.dump(recipes.items)
 
         # Return the paginated list of recipes as JSON
-    
         return jsonify({
-            "recipes": recipes_data,
+            "recipes": serialized_recipes,
             "page": page,
             "per_page": per_page,
             "total_items": recipes.total,
             "total_pages": recipes.pages
-        })
-
+        }), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 @recipe_bp.route('/recipes/<recipe_id>', methods=['DELETE'])
 @jwt_required()

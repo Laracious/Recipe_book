@@ -1,7 +1,6 @@
 import os
 from flask_migrate import Migrate
 from sys import exit
-import MySQLdb
 
 from recipeapp.config import config_dict
 from recipeapp import create_app, db

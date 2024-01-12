@@ -148,9 +148,13 @@ def get_one_recipe(recipe_id):
 
         if not recipe:
             return jsonify({'error': 'Recipe not found'}), 404
+        
+        # Serialize the recipe using the Marshmallow schema
+        recipe_schema = RecipeSchema()
+        serialized_recipe = recipe_schema.dump(recipe)
 
         # Return details of the recipe as JSON
-        return jsonify({'recipe': recipe.format()})
+        return jsonify({'recipe': serialized_recipe}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

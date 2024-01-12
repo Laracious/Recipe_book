@@ -1,6 +1,7 @@
 import os
 from flask_migrate import Migrate
 from sys import exit
+import MySQLdb
 
 from recipeapp.config import config_dict
 from recipeapp import create_app, db
@@ -17,6 +18,7 @@ try:
 
 except KeyError:
     exit("Error: Invalid <config_mode>. Expected values [Debug, Production] ")
+
 
 app = create_app(app_config)
 Migrate(app, db)

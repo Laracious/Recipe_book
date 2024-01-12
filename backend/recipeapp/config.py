@@ -18,8 +18,6 @@ class Config(object):
     if not SECRET_KEY:
         SECRET_KEY = ''.join(random.choice( string.ascii_lowercase  ) for i in range(64))
 
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
     SECRET_KEY = os.environ.get("SECRET_KEY", "test")
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "SQLALCHEMY_DATABASE_URI", "sqlite:///recipe.db"

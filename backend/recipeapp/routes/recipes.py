@@ -86,6 +86,14 @@ def update_recipe(recipe_id):
 
             # Get the JSON data from the request
             data = request.get_json()
+            
+            # Validate incoming JSON data against the Marshmallow schema
+            recipe_schema = RecipeSchema()
+            errors = recipe_schema.validate(data)
+            
+            if errors:
+                return jsonify(
+                    {'error': 'Invalid input data', 'errors': errors}), 400
 
             # Find the recipe in the database
             recipe = Recipe.find_one(id=recipe_id)
@@ -104,12 +112,15 @@ def update_recipe(recipe_id):
             # Update the recipe with the data from the JSON
             recipe.update(**data)
             recipe.save()
-
+            
+            # Serialize the updated recipe using the Marshmallow schema
+            serialized_recipe = recipe_schema.dump(recipe)
+            
             return jsonify({
                 'message': 'Recipe updated successfully',
-                'recipe': recipe.format()
+                'recipe': serialized_recipe
                 })
-
+            
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 

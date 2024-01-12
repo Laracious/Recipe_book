@@ -123,6 +123,7 @@ def promote_user(username):
 
         # Update the user's is_admin field to True
         user_to_promote.update(is_admin=True)
+        user_to_promote.save()
 
         return jsonify(
             {'message': f'User {username} has been promoted to admin.'}

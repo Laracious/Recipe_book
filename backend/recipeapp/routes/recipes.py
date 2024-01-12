@@ -298,7 +298,8 @@ def rate_negative(recipe_id):
         db.session.commit()
 
         # Return a success message
-        return jsonify({'message': 'Negative rating incremented successfully'})
+        return jsonify(
+            {'message': 'Negative rating incremented successfully'})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -338,6 +339,40 @@ def reset_rating(recipe_id):
 
             # Return a success message
             return jsonify({'message': 'User rating reset successfully'})
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    return jsonify({'error': 'Access denied. Admins only.'}), 403
+
+
+@recipe_bp.route('/recipes/reset_all_ratings', methods=['POST'])
+@jwt_required()
+def reset_all_ratings():
+    """
+    Reset user rating for all recipes.
+
+    Returns:
+        JSON: A success message indicating that the ratings were reset.
+    """
+    if current_user and current_user.is_admin:
+        try:
+            # Fetch all recipes from the database
+            recipes = Recipe.get_all()
+
+            # Reset user ratings for all recipes
+            for recipe in recipes:
+                recipe.user_rating = {
+                    'count_positive': 0,
+                    'count_negative': 0,
+                    'score': 0
+                }
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            # Return a success message
+            return jsonify({'message': 'User ratings reset for all recipes'})
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500

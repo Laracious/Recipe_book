@@ -13,7 +13,7 @@ class Recipe(BaseModel):
     user_id = db.Column(
         db.String(22), 
         db.ForeignKey('user.id'), 
-        nullable=False
+        nullable=True
         )
 
     # Additional fields

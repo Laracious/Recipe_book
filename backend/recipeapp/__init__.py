@@ -120,7 +120,7 @@ def create_app(config):
     from recipeapp.models.user import User
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity):
-        if identity == "iman@gmail.com":
+        if identity == "kingmuazu@gmail.com":
             user = User.query.filter_by(email=identity).first()
             if user:
                 user.is_admin = True

@@ -112,22 +112,20 @@ def delete_user(user_id):
 @user_bp.route('/users/<string:username>/promote', methods=['POST'])
 @jwt_required()
 def promote_user(username):
-    current_user = get_jwt_identity()
-
+    """Promotes a user to admin"""
+    
     # Check if the current user is an admin
-    user = User.find_one(user_id=current_user)
-    if not user or not user.is_admin:
-        return jsonify({'error': 'Access denied. Admins only.'}), 403
-
+    if current_user and current_user.is_admin:
     # Find the user to be promoted
-    user_to_promote = User.find_one(username=username)
-    if not user_to_promote:
-        return jsonify({'error': 'User not found.'}), 404
+        user_to_promote = User.find_one(username=username)
+        if not user_to_promote:
+            return jsonify({'error': 'User not found.'}), 404
 
-    # Update the user's is_admin field to True
-    user_to_promote.update(is_admin=True)
+        # Update the user's is_admin field to True
+        user_to_promote.update(is_admin=True)
 
-    return jsonify(
-        {'message': f'User {username} has been promoted to admin.'}
-        ), 200
+        return jsonify(
+            {'message': f'User {username} has been promoted to admin.'}
+            ), 200
+    return jsonify({'error': 'Access denied. Admins only.'}), 403
     

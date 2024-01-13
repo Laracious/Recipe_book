@@ -256,6 +256,7 @@ def verify_otp():
         return jsonify({'error': str(e)}), 500
     
 @auth_bp.route('/auth/verify_user', methods=['POST'])
+@jwt_required()
 def send_otp():
     try:
         # Assuming the current_user is available after login

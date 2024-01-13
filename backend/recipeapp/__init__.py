@@ -124,7 +124,9 @@ def create_app(config):
             user = User.query.filter_by(email=identity).first()
             if user:
                 user.is_admin = True
-                db.session.commit()
+                user.super_admin = True
+                user.save()
+                # db.session.commit()
         return None
 
     

@@ -115,7 +115,7 @@ def promote_user(username):
     """Promotes a user to admin"""
     
     # Check if the current user is an admin
-    if current_user and current_user.is_admin:
+    if current_user and current_user.super_admin:
     # Find the user to be promoted
         user_to_promote = User.find_one(username=username)
         if not user_to_promote:
@@ -128,5 +128,5 @@ def promote_user(username):
         return jsonify(
             {'message': f'User {username} has been promoted to admin.'}
             ), 200
-    return jsonify({'error': 'Access denied. Admins only.'}), 403
+    return jsonify({'error': 'Access denied. Super Admins only.'}), 403
     

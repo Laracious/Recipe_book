@@ -355,7 +355,7 @@ def reset_all_ratings():
     Returns:
         JSON: A success message indicating that the ratings were reset.
     """
-    if current_user and current_user.is_admin:
+    if current_user and current_user.super_admin:
         try:
             # Fetch all recipes from the database
             recipes = Recipe.get_all()

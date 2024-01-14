@@ -6,7 +6,7 @@ const ColorModeSwitch = () => {
 
   return (
 
-    <HStack justifyContent='flex-end' padding={5} position="absolute" top="0" right="0">
+    <HStack  padding={5} position="absolute" top="0" right="0">
       <Show above="lg">
       <Switch
         colorScheme="green"

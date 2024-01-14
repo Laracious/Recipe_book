@@ -23,6 +23,6 @@ const Home = () => {
    </GridItem>
  </>
   )
-};
+}
 
 export default Home;

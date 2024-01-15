@@ -270,7 +270,7 @@ def send_otp():
         if current_user.verified:
             return jsonify({'message': 'User already verified'}), 200
         
-        # Generate and send OTP, save it in the database and send it
+        # Generate OTP, save it in the database and send it
         otp = generate_otp()
         current_user.otp = otp
         current_user.save()

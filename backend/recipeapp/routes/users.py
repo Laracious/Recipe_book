@@ -1,9 +1,10 @@
 """Users routes"""
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, current_user, get_jwt_identity
+from flask_jwt_extended import jwt_required, current_user
 from recipeapp.models.user import User
 from recipeapp.utils.data_validation import validate_uuid
 from recipeapp.models.schemas import UserSchema
+from recipeapp.utils.emails import promotion_email
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/v1')
@@ -124,6 +125,9 @@ def promote_user(username):
         # Update the user's is_admin field to True
         user_to_promote.update(is_admin=True)
         user_to_promote.save()
+        
+        # Send a promotion message to the user
+        promotion_email(user_to_promote.full_name, user_to_promote.email)
 
         return jsonify(
             {'message': f'User {username} has been promoted to admin.'}

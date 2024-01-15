@@ -64,8 +64,22 @@ def welcome_email(name, email):
         'app_name': 'Recipe Book',
         'title': 'Welcome to Foodie - Recipe Book',
         'body':
-            'Welcome to Foodie. Please use this\
-                verification code to confirm your registration',
+            'Thank you for joining us on this delicious journey!\ Explore our\
+                app and discover amazing recipes to satisfy your cravings.',
+        'name': name
+    }
+    send_email(email, subject, template, template_data)
+
+# Sending promotion to admin email
+def promotion_email(name, email):
+    subject = 'Promotion to Admin'
+    template = 'to_admin.html'
+    template_data = {
+        'app_name': 'Recipe Book',
+        'title': 'Welcome to Admins Team - Recipe Book',
+        'body':
+            'Your dedication and hard work have paid off. Welcome to the\
+                admin team! Your new responsibilities and privileges await.',
         'name': name
     }
     send_email(email, subject, template, template_data)

@@ -27,7 +27,7 @@ const useRecipes = () => {
 
     setLoading(true);
     apiClient
-      .get<FetchRecipesRespone>("/list", { signal: controller.signal })
+      .get<FetchRecipesRespone>("/all", { signal: controller.signal })
       .then((res) => {
         setRecipes(res.data.results)
         setLoading(false);

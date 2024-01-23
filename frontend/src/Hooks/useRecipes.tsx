@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "../Services/api-client";
 import { CanceledError } from "axios";
-import { SelectField } from "@chakra-ui/react";
 
 export interface Recipe {
   id: number;

@@ -19,7 +19,7 @@ function App() {
         <Grid
           templateAreas={{
           base: `"nav " " main"`,
-          lg: `"nav nav" "aside main"`,
+          lg: `"nav nav" `,
          }}
           templateColumns="repeat(2, 1fr)"
           gap={0}

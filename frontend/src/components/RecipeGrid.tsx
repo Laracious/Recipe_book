@@ -8,21 +8,20 @@ const RecipeGrid = () => {
   const skeletons = [1, 2, 3, 4, 5, 6];
 
   return (
-    <>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       {error && <Text>{error}</Text>}
       <SimpleGrid
         templateColumns="repeat(3, 1fr)"
         padding="10px"
         margin="100px"
         gap={8}
-        justifyContent="flex-end"
       >
         {isLoading && skeletons.map(skeleton => <CardSkeleton key={skeleton}/>)}
         {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
       </SimpleGrid>
-    </>
+    </div>
   );
 };
 

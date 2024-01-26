@@ -98,30 +98,24 @@ const SignUp = () => {
     //EXECUTE THE ENCLOSED CODE IF FORM VALIDATION RETURNS TRUE
     if (valid) {
       console.log("Form Valid!");
-      // toast.success("Registered successfully!");
       
-      // setTimeout(() => navigate("/sign-in"), 2000);
+
+const data =  {
+  username: username,
+  full_name: fullname,
+  email: email,
+  password: password,
+};
+const payLoad = JSON.stringify(data);
+console.log("payLoad: ", payLoad);
 
 
       try {
-        //MAKE API CALL FOR REGISTERATION
-        const response = await axios.post(
-          "http://localhost:5173/api/register",
-          {
-            fullname,
-            username,
-            email,
-            password,
-          }
-        );
-        console.log("signup resp: ", response);
-        // if (response.status === 200) {
-        //   //DISPLAY MESSAGE TO THE USER
-        //   toast.success("Registered successfully!");
-        //   setTimeout(() => navigate("/sign-in"), 2000);
-        //   //CLEAR THE FORM FIELDS.
-        //   setFormData(defaultFormData);
-        // }
+        
+        fetchData(payLoad);
+        
+
+       
       } catch (error: any) {
         console.error("Error during registration:", error);
         //DISPLAY ERROR MESSAGE TO USER.
@@ -129,7 +123,28 @@ const SignUp = () => {
       }
     }
   };
+  async function fetchData(payLoad: any) {
 
+    const response = await fetch(
+      "http://0.0.0.0:5005/api/v1/auth/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: payLoad
+      }
+    ) ;
+    
+    const data = await response.json();
+    
+    
+    console.log('response: ', data);
+    if (data.message === 'User created successfully.                 A verification email has been sent to your email address.                    Please check your inbox and follow the instructions.'){
+      navigate("/sign-in")
+    } 
+
+    }
   return (
     <>
       <ToastContainer autoClose={2000} />

@@ -48,28 +48,27 @@ const SignIn = () => {
     let valid = isValid(usernameOrEmail, password);
 
     //COPY THE FORM-DATA
-    let data = formData;
+    let data = JSON.stringify({email: formData.usernameOrEmail, password: formData.password});
 
-    console.log("DATA: ", data);
+    console.log("DATA: ", data )
     
 
     //EXECUTE THE ENCLOSED CODE IF FORM VALIDATION RETURNS TRUE
     if (valid) {
       try {
         // MAKE API CALL FOR LOGIN
-        const response = await axios.post('http://localhost:5173/api/login', data);
+      
 
-        console.log("API Response:", response);
-
-
-        //HANDLE SIGN IN LOGIC BASED ON RESPONSE
-        if (response.status === 200) {
-          // localStorage.setItem('token', response.token);
-          navigate('/');
+        const response = await login(data);
+        if (!response ) return;
+        if (response.token){
+          localStorage.setItem('token', response.token.access_token) 
+            navigate('/');
+  
         }
 
-        //RESET LOGIN FORM FIELDS
-        setFormData(defaultFormData);
+
+        
       } catch (error: any) {
         
         console.error("API Error:", error)
@@ -77,6 +76,8 @@ const SignIn = () => {
         //DISPLAY API CALL ERROR MESSAGE TO USER.
         toast.error(error.message);
       }
+      
+
     }
   };
 
@@ -113,6 +114,33 @@ const SignIn = () => {
 
     
   };
+  async function login(payLoad: any) {
+try {
+  const response = await fetch(
+    "http://0.0.0.0:5005/api/v1/auth/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: payLoad
+    }
+  ) ;
+
+  const data = await response.json();
+  return data;
+
+}
+catch(error: any) {
+        
+  console.error("API Error:", error)
+  
+  //DISPLAY API CALL ERROR MESSAGE TO USER.
+  toast.error(error.error);
+  return false;
+}
+    
+    }
 
   return (
     <>

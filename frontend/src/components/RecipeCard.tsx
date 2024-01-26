@@ -9,6 +9,7 @@ import { Recipe } from "../Hooks/useRecipes";
 import CriticScore from "./CriticScore";
 import Description from "./description";
 import { useColorMode } from "@chakra-ui/react";
+import Video from "./Video";
 
 interface Props {
   recipe: Recipe;
@@ -33,7 +34,7 @@ const RecipeCard = ({ recipe }: Props) => {
     >
       <Image
         height={200}
-        src={recipe.thumbnail_url}
+        src={recipe.image}
         alt={`Thumbnail for ${recipe.name}`}
       />
       <CardBody>
@@ -42,7 +43,8 @@ const RecipeCard = ({ recipe }: Props) => {
         </Heading>
         <HStack spacing={3} justify="space-between">
           <Description descripe={recipe.description} />
-          <CriticScore scoring={parseFloat((recipe.user_ratings.score * 10).toFixed(1))} />
+          <CriticScore scoring={parseFloat((recipe.user_rating.score * 10).toFixed(1))} />
+          <Video watch={recipe.video} />
         </HStack>
       </CardBody>
     </Card>

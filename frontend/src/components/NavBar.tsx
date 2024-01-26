@@ -34,7 +34,7 @@ const NavBar = ({ onSearch }: Props) => {
           borderWidth="2px"
           borderColor="#a80863"
           borderRadius="md"
-          backgroundColor="orange"
+          backgroundColor="#075050"
           padding="0.3rem 0.5rem"
           _hover={{
             textDecoration: "underline",

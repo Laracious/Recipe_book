@@ -3,16 +3,18 @@ import apiClient from "../Services/api-client";
 import { CanceledError } from "axios";
 
 export interface Recipe {
-  id: number;
+  id: string;
   name: string;
-  thumbnail_url: string;
+  image: string;
   description: string;
-  user_ratings:{
-    score: string;
+  video: string;
+  user_rating:{
+    score: number;
   }
 }
 
 interface FetchRecipesRespone {
+  recipes: any;
   count: number;
   results: Recipe[];
 }
@@ -27,9 +29,10 @@ const useRecipes = () => {
 
     setLoading(true);
     apiClient
-      .get<FetchRecipesRespone>("/list", { signal: controller.signal })
+      .get<FetchRecipesRespone>("/all?page=1&per_page=22", { signal: controller.signal })
       .then((res) => {
-        setRecipes(res.data.results)
+        console.log(res)
+        setRecipes(res.data.recipes)
         setLoading(false);
     })
       .catch((err) => {

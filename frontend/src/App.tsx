@@ -6,13 +6,17 @@ import { useState } from "react";
 import Home from "./components/home";
 import "./App.css"
 import Footer from "./components/Footer";
+import { useMediaQuery } from 'react-responsive';
 
 export interface RecipeQuery {
   onSearch: (searchText: string) => void;
 } 
 
 function App() {
-  const [recipeQuery, setRecipeQuery] =useState<RecipeQuery>({} as RecipeQuery)
+  const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+  const isTablet = useMediaQuery({ query: '(min-width: 768px) and (max-width: 1023px)' });
+  const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
+  
   return (
     <div className="page-container">
       <div className="content-wrap">

@@ -2,7 +2,6 @@ from .recipe import Recipe
 from .base_model import BaseModel, db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import get_jwt_identity
 
 class User(BaseModel, UserMixin):
     """User model"""
@@ -14,6 +13,7 @@ class User(BaseModel, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    super_admin = db.Column(db.Boolean, default=False)
     verified = db.Column(db.Boolean, default=False)
     otp = db.Column(db.Integer, nullable=True)
 
@@ -43,6 +43,8 @@ class User(BaseModel, UserMixin):
         self.email = kwargs.get('email')
         self.password = kwargs.get('password')
         self.is_admin = kwargs.get('is_admin', False)
+        self.super_admin = kwargs.get('super_admin', False)
+        self.verified = kwargs.get('verified', False)
         self.recipes = kwargs.get('recipes', [])
         self.otp = kwargs.get('otp')
         self.bookmarks = kwargs.get('bookmarks', [])
@@ -55,21 +57,16 @@ class User(BaseModel, UserMixin):
         """Check if the provided password matches the user's hashed password"""
         return check_password_hash(self.password, password)
     
-    @classmethod
-    def find_one_with_relationships(cls, **kwargs):
-        return cls.query.options(
-            db.joinedload(cls.recipes), db.joinedload(cls.bookmarks)
-            ).filter_by(**kwargs).one_or_none()
 
-    def format(self):
-        """Convert the recipe object to a dictionary"""
-        return {
-            "id": self.id,
-            "username": self.username,
-            "full_name": self.full_name,
-            "email": self.email,
-            "is_admin": self.is_admin,
-            # "createdAt": self.createdAt,
-            # "updatedAt": self.updatedAt
-        }
+    # def format(self):
+    #     """Convert the recipe object to a dictionary"""
+    #     return {
+    #         "id": self.id,
+    #         "username": self.username,
+    #         "full_name": self.full_name,
+    #         "email": self.email,
+    #         "is_admin": self.is_admin,
+    #         # "createdAt": self.createdAt,
+    #         # "updatedAt": self.updatedAt
+    #     }
     

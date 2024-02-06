@@ -200,8 +200,7 @@ def logout():
 
         # Add the JTI to the blocklist
         TokenBlocklist.create(jti=jti)
-        print(TokenBlocklist.query.all())
-
+        
         return jsonify({'message': 'Successfully logged out'}), 200
 
     except Exception as e:
@@ -254,4 +253,33 @@ def verify_otp():
         user.save()
         return jsonify({'message': 'Password reset successfully'}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500 
+        return jsonify({'error': str(e)}), 500
+    
+@auth_bp.route('/auth/verify_user', methods=['POST'])
+@jwt_required()
+def send_otp():
+    try:
+        # Assuming the current_user is available after login
+        if not current_user:
+            return jsonify({'error': 'User not authenticated'}), 401
+
+        # Validate the email format
+        validate_email(current_user.email)
+        
+        # Check if the user is already verified
+        if current_user.verified:
+            return jsonify({'message': 'User already verified'}), 200
+        
+        # Generate OTP, save it in the database and send it
+        otp = generate_otp()
+        current_user.otp = otp
+        current_user.save()
+        
+        send_otp_email(
+            name=current_user.full_name, email=current_user.email, otp=otp)
+
+        return jsonify(
+            {'message': 'OTP sent successfully. Check your email.'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
